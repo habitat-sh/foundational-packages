@@ -1,0 +1,7 @@
+[rules]
+# Ignore example scripts
+host-script-interpreter = {ignored_files = ["share/doc/libxml2*"]}
+license-not-found = {level = "off", source-shasum = "f453480307524968f7a04ec65e64f2a83a825973bcd260a2e7691be82ae70c96"}
+missing-license = {level = "off", source-shasum = "f453480307524968f7a04ec65e64f2a83a825973bcd260a2e7691be82ae70c96"}
+unused-runpath-entry = {level = "off"}
+unused-dependency = {ignored_packages = ["core/xz", "core/zlib"]}
