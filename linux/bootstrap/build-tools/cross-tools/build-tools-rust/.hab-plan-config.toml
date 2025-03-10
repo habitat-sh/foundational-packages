@@ -1,0 +1,12 @@
+docker-image = "hab-bootstrap:20230523"
+[rules]
+missing-license = {level = "off", source-shasum = "628efa8ef0658a7c4199883ee132281f19931448d3cfee4ecfd768898fe74c18"}
+script-interpreter-not-found = {ignored_files = ["*.rs"]}
+# The following dependencies are needed at runtime by Cargo for the associated reasons:
+# 1. core/cacerts - Provides SSL certificates necessary for secure connections.
+# 2. core/binutils - Supplies the 'ld' linker, utilized indirectly by Rust through gcc.
+# 3. core/tzdata - Needed for the proper operation of the GNU C Library (glibc).
+# 4. core/iana-etc - Also required for the functioning of glibc.
+unused-dependency = {ignored_packages = [
+    "core/{build-tools-cacerts,build-tools-binutils}"
+]}
