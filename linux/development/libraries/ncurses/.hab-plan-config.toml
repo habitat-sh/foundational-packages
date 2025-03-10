@@ -1,0 +1,3 @@
+[rules]
+# The core/gcc-libs runpath entry will always be added due to the ld-wrapper logic
+unused-runpath-entry = {ignored_files = ["bin/*", "lib/*"]}
