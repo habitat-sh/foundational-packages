@@ -2,7 +2,7 @@ program="openssl"
 
 pkg_name="openssl"
 pkg_origin="core"
-pkg_version="3.0.9"
+pkg_version="3.2.4"
 pkg_maintainer="The Habitat Maintainers <humans@habitat.sh>"
 pkg_description="\
 OpenSSL is an open source project that provides a robust, commercial-grade, \
@@ -13,7 +13,7 @@ library.\
 pkg_upstream_url="https://www.openssl.org"
 pkg_license=('Apache-2.0')
 pkg_source="https://www.openssl.org/source/${program}-${pkg_version}.tar.gz"
-pkg_shasum="eb1ab04781474360f77c318ab89d8c5a03abc38e63d65a603cabbf1b00a1dc90"
+pkg_shasum="b23ad7fd9f73e43ad1767e636040e88ba7c9e5775bfa5618436a0dd2c17c3716"
 pkg_dirname="${program}-${pkg_version}"
 pkg_deps=(
 	core/glibc
@@ -27,6 +27,7 @@ pkg_build_deps=(
 	core/sed
 	core/patch
 	core/build-tools-perl
+	core/openssl-stage1
 )
 
 pkg_bin_dirs=(bin)
@@ -69,13 +70,16 @@ do_build() {
 	"$(pkg_path_for core/build-tools-perl)"/bin/perl ./Configure \
 		--prefix="${pkg_prefix}" \
 		--openssldir=ssl \
-		fips
+		enable-fips
 
 	make -j"$(nproc)"
+	cp -v $(pkg_path_for core/openssl-stage1)/ssl/fipsmodule.cnf ./providers/
+	cp -v $(pkg_path_for core/openssl-stage1)/lib64/ossl-modules/fips.so ./providers/
+
 }
 
 do_check() {
-	make test
+	make tests
 }
 
 do_install() {

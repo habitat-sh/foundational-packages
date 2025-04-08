@@ -1,9 +1,8 @@
 program="openssl"
-native_target="${TARGET_ARCH:-${pkg_target%%-*}}-hab-linux-gnu"
 
-pkg_name="build-tools-openssl"
+pkg_name="openssl-stage1"
 pkg_origin="core"
-pkg_version="3.2.4"
+pkg_version="3.0.9"
 pkg_maintainer="The Habitat Maintainers <humans@habitat.sh>"
 pkg_description="\
 OpenSSL is an open source project that provides a robust, commercial-grade, \
@@ -14,56 +13,49 @@ library.\
 pkg_upstream_url="https://www.openssl.org"
 pkg_license=('Apache-2.0')
 pkg_source="https://www.openssl.org/source/${program}-${pkg_version}.tar.gz"
-pkg_shasum="b23ad7fd9f73e43ad1767e636040e88ba7c9e5775bfa5618436a0dd2c17c3716"
+pkg_shasum="eb1ab04781474360f77c318ab89d8c5a03abc38e63d65a603cabbf1b00a1dc90"
 pkg_dirname="${program}-${pkg_version}"
 pkg_deps=(
-	core/build-tools-glibc
+	core/glibc
 )
 pkg_build_deps=(
-	core/native-cross-gcc
+	core/coreutils
+	core/gcc
+	core/grep
+	core/make
+	core/sed
+	core/patch
+	core/build-tools-perl
 )
 
 pkg_bin_dirs=(bin)
 pkg_include_dirs=(include)
-pkg_lib_dirs=(lib)
-pkg_pconfig_dirs=(lib/pkgconfig)
+pkg_lib_dirs=(lib64)
+pkg_pconfig_dirs=(lib64/pkgconfig)
 
 do_prepare() {
 	patch -p1 <"$PLAN_CONTEXT/hab-ssl-cert-file.patch"
+
+
 	export CROSS_SSL_ARCH="${native_target}"
-	build_line "Setting CROSS_SSL_ARCH=${CROSS_SSL_ARCH}"
+	PERL=$(pkg_path_for core/build-tools-perl)/bin/perl
+	export PERL
+	build_line "Setting PERL=$/{PERL}"
 }
-
 do_build() {
-	local openssl_arch
-	case $native_target in
-	aarch64-hab-linux-gnu)
-		openssl_arch="linux-aarch64"
-		;;
-	x86_64-hab-linux-gnu)
-		openssl_arch="linux-x86_64"
-		;;
-	esac
-
-	./Configure \
-		--cross-compile-prefix="${native_target}-" \
-		--libdir=lib \
+	"$(pkg_path_for core/build-tools-perl)"/bin/perl ./Configure \
 		--prefix="${pkg_prefix}" \
 		--openssldir=ssl \
-		shared \
-		fips \
-		$openssl_arch
+		enable-fips
 
 	make -j"$(nproc)"
+
 }
 
-do_check() {
-	make test
-}
 
 do_install() {
-	do_default_install
-
+	make install_fips
+	cp $CACHE_PATH/LICENSE.txt "$pkg_prefix"
 	# Remove dependency on Perl at runtime
 	rm -rfv "$pkg_prefix/ssl/misc" "$pkg_prefix/bin/c_rehash"
 }
