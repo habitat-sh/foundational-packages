@@ -35,11 +35,11 @@ index b3e7444e5f..9815655db9 100644
  crlnumber	= $dir/crlnumber	# the current crl number
  					# must be commented out to leave a V1 CRL
 
-diff --git a/include/internal/cryptlib.h b/include/internal/cryptlib.h
-index d42a134bdf..32094e1780 100644
---- a/include/internal/cryptlib.h
-+++ b/include/internal/cryptlib.h
-@@ -41,8 +41,8 @@ DEFINE_LHASH_OF(MEM);
+diff --git a/include/internal/common.h b/include/internal/common.h
+index 0c0415b777..3de7beb768 100644
+--- a/include/internal/common.h
++++ b/include/internal/common.h
+@@ -82,8 +82,8 @@ __owur static ossl_inline int ossl_assert_int(int expr, const char *exprstr,
  
  # ifndef OPENSSL_SYS_VMS
  #  define X509_CERT_AREA          OPENSSLDIR
