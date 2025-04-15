@@ -25,14 +25,7 @@ do_prepare() {
 	# Change the dynamic linker and glibc library to link against core/glibc
 	libc=$(pkg_path_for glibc)
 	linux_headers="$(pkg_path_for linux-headers)"
-	case $pkg_target in
-	aarch64-linux)
-		dynamic_linker="${libc}/lib/ld-linux-aarch64.so.1"
-		;;
-	x86_64-linux)
-		dynamic_linker="${libc}/lib/ld-linux-x86-64.so.2"
-		;;
-	esac
+	dynamic_linker="${libc}/lib/ld-linux-x86-64.so.2"
 
 	set_runtime_env "HAB_GCC_STAGE1_DYNAMIC_LINKER" "${dynamic_linker}"
 	set_runtime_env "HAB_GCC_STAGE1_C_START_FILES" "${libc}/lib"

@@ -51,14 +51,7 @@ do_prepare() {
 	libc="$(pkg_path_for glibc)"
 	linux_headers="$(pkg_path_for linux-headers)"
 
-	case $pkg_target in
-	aarch64-linux)
-		dynamic_linker="$libc/lib/ld-linux-aarch64.so.1"
-		;;
-	x86_64-linux)
-		dynamic_linker="$libc/lib/ld-linux-x86-64.so.2"
-		;;
-	esac
+	dynamic_linker="$libc/lib/ld-linux-x86-64.so.2"
 	# This plan does not require a full bootstrap build of gcc because
 	# core/gcc-stage1 is a fully bootstrapped compiler of the same version.
 	# Bootstrapping is only recommended when there is a major version difference
@@ -198,14 +191,7 @@ wrap_binary() {
 	wrapper_binary="$pkg_prefix/bin/$binary"
 	actual_binary="$pkg_prefix/bin/$binary.real"
 
-	case $pkg_target in
-	aarch64-linux)
-		dynamic_linker="$libc/lib/ld-linux-aarch64.so.1"
-		;;
-	x86_64-linux)
-		dynamic_linker="$libc/lib/ld-linux-x86-64.so.2"
-		;;
-	esac
+	dynamic_linker="$libc/lib/ld-linux-x86-64.so.2"
 
 	build_line "Adding wrapper for $binary"
 	mv -v "$wrapper_binary" "$actual_binary"

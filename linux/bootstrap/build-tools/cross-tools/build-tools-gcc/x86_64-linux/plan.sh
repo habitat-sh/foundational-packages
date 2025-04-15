@@ -49,14 +49,7 @@ do_prepare() {
 	local dynamic_linker
 	local cleaned_path
 
-	case $native_target in
-	aarch64-hab-linux-gnu)
-		dynamic_linker="$(pkg_path_for build-tools-glibc)/lib/ld-linux-aarch64.so.1"
-		;;
-	x86_64-hab-linux-gnu)
-		dynamic_linker="$(pkg_path_for build-tools-glibc)/lib/ld-linux-x86-64.so.2"
-		;;
-	esac
+	dynamic_linker="$(pkg_path_for build-tools-glibc)/lib/ld-linux-x86-64.so.2"
 
 	sed '/thread_header =/s/@.*@/gthr-posix.h/' -i libgcc/Makefile.in libstdc++-v3/include/Makefile.in
 
@@ -192,14 +185,7 @@ wrap_binary() {
 	wrapper_binary="$pkg_prefix/bin/$binary"
 	actual_binary="$pkg_prefix/bin/$binary.real"
 
-	case $native_target in
-	aarch64-hab-linux-gnu)
-		dynamic_linker="$libc/lib/ld-linux-aarch64.so.1"
-		;;
-	x86_64-hab-linux-gnu)
-		dynamic_linker="$libc/lib/ld-linux-x86-64.so.2"
-		;;
-	esac
+	dynamic_linker="$libc/lib/ld-linux-x86-64.so.2"
 
 	build_line "Adding wrapper for $binary"
 	mv -v "$wrapper_binary" "$actual_binary"

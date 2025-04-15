@@ -50,15 +50,7 @@ do_prepare() {
 
 	libc="$(pkg_path_for glibc-stage0)"
 	linux_headers="$(pkg_path_for linux-headers)"
-
-	case $pkg_target in
-	aarch64-linux)
-		dynamic_linker="${libc}/lib/ld-linux-aarch64.so.1"
-		;;
-	x86_64-linux)
-		dynamic_linker="${libc}/lib/ld-linux-x86-64.so.2"
-		;;
-	esac
+	dynamic_linker="${libc}/lib/ld-linux-x86-64.so.2"
 
 	# This plan does a full bootstrap build of gcc. This requires us to
 	# ensure that all the intermediate compilers and libraries are configured
@@ -201,14 +193,7 @@ wrap_binary() {
 	wrapper_binary="$pkg_prefix/bin/$binary"
 	actual_binary="$pkg_prefix/bin/$binary.real"
 
-	case $pkg_target in
-	aarch64-linux)
-		dynamic_linker="$libc/lib/ld-linux-aarch64.so.1"
-		;;
-	x86_64-linux)
-		dynamic_linker="$libc/lib/ld-linux-x86-64.so.2"
-		;;
-	esac
+	dynamic_linker="$libc/lib/ld-linux-x86-64.so.2"
 
 	build_line "Adding wrapper for $binary"
 	mv -v "$wrapper_binary" "$actual_binary"
