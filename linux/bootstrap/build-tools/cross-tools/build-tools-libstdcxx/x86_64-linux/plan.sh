@@ -41,7 +41,7 @@ do_prepare() {
 	final_path="${binutils}/${native_target}/bin:${gcc}/bin:${PATH}"
 	export PATH="${final_path}"
 
-	dynamic_linker="${libc}/lib/ld-linux-aarch64.so.1"
+	dynamic_linker="${libc}/lib/ld-linux-x86-64.so.2"
 	# Specify the dynamic linker to point to our glibc
 	export LDFLAGS="${LDFLAGS} -Wl,--dynamic-linker=$dynamic_linker"
 	# Ensure that the cross linker 'ld' finds the crt{i,n,1}.o files in our glibc package
