@@ -35,16 +35,6 @@ do_prepare() {
 }
 
 do_build() {
-	local openssl_arch
-	case $native_target in
-	aarch64-hab-linux-gnu)
-		openssl_arch="linux-aarch64"
-		;;
-	x86_64-hab-linux-gnu)
-		openssl_arch="linux-x86_64"
-		;;
-	esac
-
 	./Configure \
 		--cross-compile-prefix="${native_target}-" \
 		--libdir=lib \
@@ -52,7 +42,7 @@ do_build() {
 		--openssldir=ssl \
 		shared \
 		fips \
-		$openssl_arch
+		linux-x86_64
 
 	make -j"$(nproc)"
 }

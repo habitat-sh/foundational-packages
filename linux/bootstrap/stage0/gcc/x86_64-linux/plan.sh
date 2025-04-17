@@ -25,14 +25,7 @@ do_prepare() {
 	libc="$(pkg_path_for glibc-stage0)"
 	local linux_headers
 	linux_headers="$(pkg_path_for linux-headers)"
-	case $pkg_target in
-	aarch64-linux)
-		set_runtime_env "HAB_BUILD_TOOLS_GCC_DYNAMIC_LINKER" "${libc}/lib/ld-linux-aarch64.so.1"
-		;;
-	x86_64-linux)
-		set_runtime_env "HAB_BUILD_TOOLS_GCC_DYNAMIC_LINKER" "${libc}/lib/ld-linux-x86-64.so.2"
-		;;
-	esac
+	set_runtime_env "HAB_BUILD_TOOLS_GCC_DYNAMIC_LINKER" "${libc}/lib/ld-linux-x86-64.so.2"
 	set_runtime_env "HAB_BUILD_TOOLS_GCC_C_START_FILES" "${libc}/lib"
 	set_runtime_env "HAB_BUILD_TOOLS_GCC_C_STD_LIBS" "${libc}/lib"
 	set_runtime_env "HAB_BUILD_TOOLS_GCC_C_STD_HEADERS" "${libc}/include:${linux_headers}/include"

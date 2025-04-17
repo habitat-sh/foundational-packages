@@ -67,14 +67,7 @@ wrap_binary() {
 	wrapper_binary="$pkg_prefix/bin/$binary"
 	actual_binary="$gcc_base/bin/$binary"
 
-	case $native_target in
-	aarch64-hab-linux-gnu)
-		dynamic_linker="$libc/lib/ld-linux-aarch64.so.1"
-		;;
-	x86_64-hab-linux-gnu)
-		dynamic_linker="$libc/lib/ld-linux-x86-64.so.2"
-		;;
-	esac
+	dynamic_linker="$libc/lib/ld-linux-x86-64.so.2"
 
 	build_line "Adding wrapper for $binary"
 	# remove symbolic link first

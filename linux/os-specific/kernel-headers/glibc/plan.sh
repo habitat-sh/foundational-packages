@@ -15,16 +15,6 @@ pkg_build_deps=(
 )
 
 do_build() {
-	local arch
-	arch="$(uname -m)"
-	case ${arch} in
-	x86_64)
-		arch="x86"
-		;;
-	aarch64)
-		arch="arm64"
-		;;
-	esac
 	make headers
 }
 
