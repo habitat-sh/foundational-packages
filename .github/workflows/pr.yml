@@ -4,8 +4,6 @@ on:
   pull_request:
     branches:
       - "base-2025"
-    types:
-      - opened
 
 jobs:
   notify_pr:
@@ -13,6 +11,6 @@ jobs:
     steps:
       - name: Notify New PR to Listeners
         run: |
-          echo "${{ {\"event_type\" : \"foundational-packages-pr\", \"client_payload\": toJson(github.pull_request) } }}" > pull_request.json
+          echo "{\"event_type\" : \"foundational-packages-pr\", \"client_payload\": ${{ toJson(github.pull_request) }} }" > pull_request.json
           gh api repos/habitat-sh/hab-pkg-builder/dispatches --input pull_request.json
 
