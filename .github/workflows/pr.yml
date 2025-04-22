@@ -13,8 +13,7 @@ jobs:
     steps:
       - name: Notify New PR to Listeners
         run: |
-          echo "github_context=${{ github }}" >> $GITHUB_OUTPUT
-          echo "{\"event_type\" : \"foundational-packages-pr\", \"client_payload\": $github_context }" > pull_request.json
+          echo "{\"event_type\" : \"foundational-packages-pr\", \"client_payload\": { \"ref\" : ${{ github.ref }}, \"sha\" : $ {{ github.sha }} }" > pull_request.json
           cat pull_request.json
           gh api repos/habitat-sh/hab-pkg-builder/dispatches --input pull_request.json
 
