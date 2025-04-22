@@ -9,7 +9,7 @@ on:
 
 jobs:
   notify_pr:
-    runs_on: ubuntu-latest
+    runs-on: ubuntu-latest
     steps:
       - name: Notify New PR to Listeners
         run: |
