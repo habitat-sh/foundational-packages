@@ -42,6 +42,8 @@ function Invoke-SetupEnvironment {
     Set-RuntimeEnv "VisualStudioVersion" "17.0"
     Set-RuntimeEnv -IsPath "VSINSTALLDIR" "$pkg_prefix\Contents"
     Set-RuntimeEnv -IsPath "VCToolsInstallDir_170" "$pkg_prefix\Contents\VC\Redist\MSVC\14.40.33807"
+    # This prevents msbuild.exe from runniun (for 15 minutes) and locking files after a build completes
+    Set-RuntimeEnv "MSBUILDDISABLENODEREUSE" "1"
 }
 
 function Invoke-Unpack {
@@ -82,5 +84,9 @@ function Invoke-Unpack {
 }
 
 function Invoke-Install {
+    # vctip.exe sends telemetry data to microsoft and locks files for several minutes after a build
+    # One can opt out via a registry setting which is not practical in a habitat context
+    # removing the execurtable is the best option here
+    Get-ChildItem -Path "$HAB_CACHE_SRC_PATH\$pkg_dirname\expanded\Contents" -Recurse -Filter "vctip.exe" -Force | Remove-Item -Force
     Copy-Item "$HAB_CACHE_SRC_PATH\$pkg_dirname\expanded\Contents" $pkg_prefix -Force -Recurse
 }
