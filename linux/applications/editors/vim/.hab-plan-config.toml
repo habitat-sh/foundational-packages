@@ -1,0 +1,7 @@
+[rules]
+missing-license = { level = "off", source-shasum = "96ab430f7e0902361cf67dd8390b7ea54672df580328067720d874ecdbc3f995" }
+license-not-found = { level = "off", source-shasum = "96ab430f7e0902361cf67dd8390b7ea54672df580328067720d874ecdbc3f995" }
+# We ignore scripts in the share folder
+host-script-interpreter = {ignored_files = ["share/*"]}
+missing-script-interpreter-dependency = {level = "off", ignored_files = ["share/*"]}
+unused-runpath-entry = {ignored_files = ["bin/*"]}
