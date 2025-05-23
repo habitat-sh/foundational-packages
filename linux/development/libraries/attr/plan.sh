@@ -1,0 +1,47 @@
+program="attr"
+
+pkg_name="attr"
+pkg_origin="core"
+pkg_version="2.5.2"
+pkg_maintainer="The Habitat Maintainers <humans@habitat.sh>"
+pkg_description="\
+Commands for Manipulating Filesystem Extended Attributes.
+"
+pkg_upstream_url="https://savannah.nongnu.org/projects/attr/"
+pkg_license=('GPL-2.0-or-later')
+pkg_source="http://download.savannah.gnu.org/releases/${program}/${program}-${pkg_version}.tar.gz"
+pkg_shasum="39bf67452fa41d0948c2197601053f48b3d78a029389734332a6309a680c6c87"
+pkg_dirname="${program}-${pkg_version}"
+
+pkg_deps=(
+	core/glibc
+)
+
+pkg_build_deps=(
+	core/gcc
+	core/coreutils-stage1
+	core/build-tools-perl
+)
+
+pkg_bin_dirs=(bin)
+pkg_include_dirs=(include)
+pkg_lib_dirs=(lib)
+pkg_pconfig_dirs=(lib/pkgconfig)
+
+do_build() {
+	./configure \
+		--prefix="$pkg_prefix" \
+		--sysconfdir="$pkg_prefix/etc" \
+		--docdir="$pkg_prefix/share/doc/attr-2.5.1"
+	make
+}
+
+do_check() {
+	sed -e "s^#\!.*bin/perl^#\!$(pkg_path_for build-tools-perl)/bin/perl^" -i "${SRC_PATH}/test/run"
+	sed -e "s^#\!.*bin/perl^#\!$(pkg_path_for build-tools-perl)/bin/perl^" -i "${SRC_PATH}/test/sort-getfattr-output"
+	make check
+}
+
+do_install() {
+	make install
+}
