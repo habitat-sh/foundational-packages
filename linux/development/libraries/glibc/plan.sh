@@ -2,7 +2,7 @@ program="glibc"
 
 pkg_name="glibc"
 pkg_origin="core"
-pkg_version="2.36"
+pkg_version="2.41"
 pkg_maintainer="The Habitat Maintainers <humans@habitat.sh>"
 pkg_description="\
 The GNU C Library project provides the core libraries for the GNU system and \
@@ -15,7 +15,7 @@ dlopen, pthread_create, crypt, login, exit and more.\
 pkg_upstream_url="https://www.gnu.org/software/libc"
 pkg_license=('GPL-2.0-or-later' 'LGPL-2.1-or-later')
 pkg_source="http://ftp.gnu.org/gnu/${program}/${program}-${pkg_version}.tar.xz"
-pkg_shasum="1c959fea240906226062cb4b1e7ebce71a9f0e3c0836c09e7e3423d434fcfe75"
+pkg_shasum="a5a26b22f545d6b7d7b3dd828e11e428f24f4fac43c934fb071b6a7d0828e901"
 pkg_dirname="${program}-${pkg_version}"
 
 pkg_deps=(
@@ -60,10 +60,6 @@ do_prepare() {
 	# hardcoded dependency and allowing us to update the `iana-etc` package independently
 	# of glibc. Thanks to https://github.com/NixOS/nixpkgs/pull/137601 for the solution.
 	patch -p1 <"$PLAN_CONTEXT/hab-nss-open-files.patch"
-	patch -p1 <"$PLAN_CONTEXT/CVE-2022-39046.patch"
-	patch -p1 <"$PLAN_CONTEXT/CVE-2023-0687.patch"
-	patch -p1 <"$PLAN_CONTEXT/CVE-2023-4911.patch"
-	patch -p1 <"$PLAN_CONTEXT/CVE-2023-6246.patch"
 
 	# 'HAB_LD_LINK_MODE' is used to control the way the habitat linker wrapper adds rpath entries.
 	# By setting it to '', we instruct the linker wrapper to add an rpath entry only if a library
