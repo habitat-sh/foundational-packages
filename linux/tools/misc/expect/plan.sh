@@ -30,6 +30,9 @@ do_prepare() {
 
 	# Make the path to `stty` absolute from `coreutils`
 	sed -i "s,/bin/stty,$(pkg_path_for coreutils)/bin/stty,g" configure
+
+	# fix for incompatibility with GCC v14.1.x
+	patch -p1 <"$PLAN_CONTEXT/expect-5.45.4-gcc14-1.patch"
 }
 
 do_build() {
