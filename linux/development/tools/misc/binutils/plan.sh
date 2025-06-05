@@ -71,7 +71,6 @@ do_build() {
 		--enable-threads \
 		--enable-new-dtags \
 		--enable-64-bit-bfd \
-		--with-system-zlib \
 		--with-system-zlib
 
 	make tooldir="${pkg_prefix}" V=1
