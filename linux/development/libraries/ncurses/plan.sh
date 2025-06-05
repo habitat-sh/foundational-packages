@@ -2,7 +2,7 @@ program="ncurses"
 
 pkg_name="ncurses"
 pkg_origin="core"
-pkg_version="6.4"
+pkg_version="6.5"
 pkg_maintainer="The Habitat Maintainers <humans@habitat.sh>"
 pkg_description="\
 ncurses (new curses) is a programming library providing an application \
@@ -12,7 +12,7 @@ user interfaces in a terminal-independent manner.\
 pkg_upstream_url="https://www.gnu.org/software/ncurses/"
 pkg_license=('X11-distribute-modifications-variant')
 pkg_source="http://ftp.gnu.org/gnu/${program}/${program}-${pkg_version}.tar.gz"
-pkg_shasum="6931283d9ac87c5073f30b6290c4c75f21632bb4fc3603ac8100812bed248159"
+pkg_shasum="136d91bc269a9a5785e5f9e980bc76ab57428f604ce3e5a5a90cebc767971cc6"
 pkg_dirname="${program}-${pkg_version}"
 
 pkg_deps=(
