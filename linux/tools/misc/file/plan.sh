@@ -2,7 +2,7 @@ program="file"
 
 pkg_name="file"
 pkg_origin="core"
-pkg_version="5.42"
+pkg_version="5.46"
 pkg_maintainer="The Habitat Maintainers <humans@habitat.sh>"
 pkg_description="\
 file is a standard Unix program for recognizing the type of data contained in \
@@ -11,7 +11,7 @@ a computer file.\
 pkg_upstream_url="https://www.darwinsys.com/file/"
 pkg_license=("LicenseRef-file")
 pkg_source="ftp://ftp.astron.com/pub/${program}/${program}-${pkg_version}.tar.gz"
-pkg_shasum="c076fb4d029c74073f15c43361ef572cfb868407d347190ba834af3b1639b0e4"
+pkg_shasum="c9cc77c7c560c543135edc555af609d5619dbef011997e988ce40a3d75d86088"
 pkg_dirname="${program}-${pkg_version}"
 
 pkg_deps=(
