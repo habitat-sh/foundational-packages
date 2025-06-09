@@ -1,6 +1,6 @@
 pkg_name="procps-ng"
 pkg_origin="core"
-pkg_version="4.0.4"
+pkg_version="4.0.5"
 pkg_maintainer="The Habitat Maintainers <humans@habitat.sh>"
 pkg_description="\
 Command line and full screen utilities for browsing procfs, a pseudo file \
@@ -10,7 +10,7 @@ status of entries in its process table.\
 pkg_upstream_url="https://gitlab.com/procps-ng/procps"
 pkg_license=('GPL-2.0-or-later' 'LGPL-2.0-or-later')
 pkg_source="https://downloads.sourceforge.net/project/${pkg_name}/Production/${pkg_name}-${pkg_version}.tar.xz"
-pkg_shasum="22870d6feb2478adb617ce4f09a787addaf2d260c5a8aa7b17d889a962c5e42e"
+pkg_shasum="c2e6d193cc78f84cd6ddb72aaf6d5c6a9162f0470e5992092057f5ff518562fa"
 pkg_dirname="${pkg_name}-${pkg_version}"
 
 pkg_deps=(
