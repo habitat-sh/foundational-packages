@@ -2,7 +2,7 @@ program="findutils"
 
 pkg_name="findutils"
 pkg_origin="core"
-pkg_version="4.9.0"
+pkg_version="4.10.0"
 pkg_maintainer="The Habitat Maintainers <humans@habitat.sh>"
 pkg_description="\
 The GNU Find Utilities are the basic directory searching utilities of the GNU \
@@ -13,7 +13,7 @@ capabilities to other commands.\
 pkg_upstream_url="http://www.gnu.org/software/findutils"
 pkg_license=('GPL-3.0-only')
 pkg_source="http://ftp.gnu.org/gnu/${program}/${program}-${pkg_version}.tar.xz"
-pkg_shasum="a2bfb8c09d436770edc59f50fa483e785b161a3b7b9d547573cb08065fd462fe"
+pkg_shasum="1387e0b67ff247d2abde998f90dfbf70c1491391a59ddfecb8ae698789f0a4f5"
 pkg_dirname="${program}-${pkg_version}"
 
 pkg_deps=(
