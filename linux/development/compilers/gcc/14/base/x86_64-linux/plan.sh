@@ -3,7 +3,7 @@ native_target="${pkg_target%%-*}-unknown-linux-gnu"
 
 pkg_name="gcc-base"
 pkg_origin="core"
-pkg_version="14.2.0"
+pkg_version="14.3.0"
 pkg_maintainer="The Habitat Maintainers <humans@habitat.sh>"
 pkg_description="\
 The GNU Compiler Collection (GCC) is a compiler system produced by the GNU \
@@ -14,7 +14,7 @@ systems.\
 pkg_upstream_url="https://gcc.gnu.org/"
 pkg_license=('GPL-3.0-or-later WITH GCC-exception-3.1' 'LGPL-3.0-or-later')
 pkg_source="http://ftp.gnu.org/gnu/$program/${program}-${pkg_version}/${program}-${pkg_version}.tar.xz"
-pkg_shasum="a7b39bc69cbf9e25826c5a60ab26477001f7c08d85cec04bc0e29cabed6f3cc9"
+pkg_shasum="e0dc77297625631ac8e50fa92fffefe899a4eb702592da5c32ef04e2293aca3a"
 pkg_dirname="${program}-${pkg_version}"
 
 pkg_deps=(
