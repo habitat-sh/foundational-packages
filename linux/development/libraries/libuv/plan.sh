@@ -1,12 +1,12 @@
 pkg_name="libuv"
 pkg_origin="core"
-pkg_version="1.44.2"
+pkg_version="1.51.0"
 pkg_maintainer="The Habitat Maintainers <humans@habitat.sh>"
 pkg_license=('MIT')
 pkg_upstream_url="http://libuv.org/"
 pkg_description="libuv is a multi-platform support library with a focus on asynchronous I/O."
 pkg_source="https://github.com/libuv/libuv/archive/v${pkg_version}.tar.gz"
-pkg_shasum="e6e2ba8b4c349a4182a33370bb9be5e23c51b32efb9b9e209d0e8556b73a48da"
+pkg_shasum="27e55cf7083913bfb6826ca78cde9de7647cded648d35f24163f2d31bb9f51cd"
 pkg_deps=(core/glibc)
 pkg_build_deps=(
 	core/autoconf
