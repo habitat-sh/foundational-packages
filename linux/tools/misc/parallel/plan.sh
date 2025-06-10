@@ -1,6 +1,6 @@
 pkg_name="parallel"
 pkg_origin="core"
-pkg_version="20221222"
+pkg_version="20250522"
 pkg_maintainer="The Habitat Maintainers <humans@habitat.sh>"
 pkg_description="\
 GNU Parallel is a shell tool for executing jobs in parallel.  A job \
@@ -22,7 +22,7 @@ programs. \
 pkg_upstream_url="https://www.gnu.org/software/parallel/"
 pkg_license=('GPL-3.0-or-later')
 pkg_source="https://ftp.gnu.org/gnu/parallel/${pkg_name}-${pkg_version}.tar.bz2"
-pkg_shasum="4da90c7bec18a94431b4e3db49dd563f65cf20ceafd245f7cc7b42ef8bf8597f"
+pkg_shasum="b4b28f475f8cff8bb6ed4b03cc5a67041f18fc73fa256923b23181b56afdb2cb"
 pkg_dirname="${pkg_name}-${pkg_version}"
 
 pkg_deps=(
