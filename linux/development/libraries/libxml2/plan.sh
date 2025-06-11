@@ -3,11 +3,11 @@ pkg_maintainer="The Habitat Maintainers <humans@habitat.sh>"
 pkg_description="Libxml2 is the XML C parser and toolkit developed for the Gnome project"
 pkg_upstream_url="http://xmlsoft.org/"
 pkg_origin="core"
-pkg_version="2.13.6"
+pkg_version="2.14.3"
 pkg_license=('MIT')
 pkg_maintainer="The Habitat Maintainers <humans@habitat.sh>"
-pkg_source="https://download.gnome.org/sources/libxml2/2.13/${pkg_name}-${pkg_version}.tar.xz"
-pkg_shasum="f453480307524968f7a04ec65e64f2a83a825973bcd260a2e7691be82ae70c96"
+pkg_source="https://download.gnome.org/sources/libxml2/2.14/${pkg_name}-${pkg_version}.tar.xz"
+pkg_shasum="6de55cacc8c2bc758f2ef6f93c313cb30e4dd5d84ac5d3c7ccbd9344d8cc6833"
 pkg_filename="${pkg_name}-${pkg_version}.tar.xz"
 pkg_deps=(
 	core/zlib
