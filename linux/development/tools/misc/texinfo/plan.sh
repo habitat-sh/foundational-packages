@@ -1,6 +1,6 @@
 pkg_name="texinfo"
 pkg_origin="core"
-pkg_version="7.0.1"
+pkg_version="7.2"
 pkg_maintainer="The Habitat Maintainers <humans@habitat.sh>"
 pkg_description="\
 Texinfo is the official documentation format of the GNU project. It was \
@@ -11,7 +11,7 @@ many non-GNU projects as well.\
 pkg_upstream_url="http://www.gnu.org/software/texinfo/"
 pkg_license=('GPL-3.0-or-later')
 pkg_source="http://ftp.gnu.org/gnu/$pkg_name/${pkg_name}-${pkg_version}.tar.xz"
-pkg_shasum="bcd221fdb2d807a8a09938a0f8d5e010ebd2b58fca16075483d6fcb78db2c6b2"
+pkg_shasum="0329d7788fbef113fa82cb80889ca197a344ce0df7646fe000974c5d714363a6"
 pkg_deps=(
 	core/gawk
 	core/glibc
