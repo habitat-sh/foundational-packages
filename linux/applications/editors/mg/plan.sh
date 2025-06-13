@@ -21,6 +21,7 @@ pkg_build_deps=(
 	core/coreutils
 	core/gcc
 	core/pkg-config
+	core/libmd
 )
 
 pkg_bin_dirs=(bin)
