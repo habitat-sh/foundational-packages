@@ -1,5 +1,5 @@
 [rules]
-missing-license = {level = "off", source-shasum = "b23ad7fd9f73e43ad1767e636040e88ba7c9e5775bfa5618436a0dd2c17c3716"}
+missing-license = {level = "off", source-shasum = "344d0a79f1a9b08029b0744e2cc401a43f9c90acd1044d09a530b4885a8e9fc0"}
 unused-dependency = {level = "off"}
 unused-runpath-entry = {level = "off"}
 library-dependency-not-found = { level = "off" }
