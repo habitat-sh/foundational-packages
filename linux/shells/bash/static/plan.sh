@@ -17,13 +17,14 @@ most sh scripts can be run by Bash without modification.\
 pkg_upstream_url="http://www.gnu.org/software/bash/bash.html"
 pkg_license=('GPL-3.0-or-later')
 pkg_source="http://ftp.gnu.org/gnu/${program}/${program}-${pkg_version}.tar.gz"
-pkg_shasum=""
+pkg_shasum="9599b22ecd1d5787ad7d3b7bf0c59f312b3396d1e281175dd1f8a4014da621ff"
 pkg_dirname="${program}-${pkg_version}"
 pkg_interpreters=(
 	bin/sh
 	bin/bash
 )
 pkg_build_deps=(
+	core/glibc
 	core/gcc
 	core/ncurses
 	core/readline
@@ -31,7 +32,8 @@ pkg_build_deps=(
 pkg_bin_dirs=(bin)
 
 do_build() {
-	./configure \
+	export CFLAGS="${CFLAGS} -static"
+	./configure -C \
 		--prefix="$pkg_prefix" \
 		--without-bash-malloc \
 		--enable-static-link
