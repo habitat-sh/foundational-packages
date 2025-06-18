@@ -1,13 +1,13 @@
 pkg_name="curl"
 pkg_origin="core"
-pkg_version="8.12.1"
+pkg_version="8.14.1"
 pkg_description="curl is an open source command line tool and library for
   transferring data with URL syntax."
 pkg_upstream_url="https://curl.haxx.se/"
 pkg_maintainer="The Habitat Maintainers <humans@habitat.sh>"
 pkg_license=('curl')
 pkg_source="https://curl.haxx.se/download/${pkg_name}-${pkg_version}.tar.gz"
-pkg_shasum="7b40ea64947e0b440716a4d7f0b7aa56230a5341c8377d7b609649d4aea8dbcf"
+pkg_shasum="6766ada7101d292b42b8b15681120acd68effa4a9660935853cf6d61f0d984d4"
 pkg_deps=(
 	core/cacerts
 	core/glibc
@@ -33,7 +33,7 @@ do_prepare() {
 	sed -i "s,/usr/bin/env/perl,$(pkg_path_for perl)/bin/perl,g" scripts/completion.pl
 
 	# Replace /usr/bin/env with our coreutils env in scripts prior to build
-    grep -lr '/usr/bin/env' . | while read -r f; do
+	grep -lr '/usr/bin/env' . | while read -r f; do
 		fix_interpreter "$f" core/coreutils bin/env
 	done
 
@@ -60,7 +60,7 @@ do_build() {
 	make
 }
 
-do_install () {
+do_install() {
 	do_default_install
 
 	# copy license files to package
