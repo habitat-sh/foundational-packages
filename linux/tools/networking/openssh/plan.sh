@@ -53,4 +53,7 @@ do_check() {
 
 do_install() {
 	make install-nosysconf
+
+	# copy license files to package
+	install -v -Dm644 ${CACHE_PATH}/LICENCE ${pkg_prefix}
 }
