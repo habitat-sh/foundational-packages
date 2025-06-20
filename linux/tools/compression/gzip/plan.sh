@@ -41,5 +41,6 @@ do_check() {
 do_install() {
 	make install
 
-	install -Dm644 ${CACHE_PATH}/COPYING ${pkg_prefix}
+	# copy license files to package
+	install -v -Dm644 ${CACHE_PATH}/COPYING ${pkg_prefix}
 }
