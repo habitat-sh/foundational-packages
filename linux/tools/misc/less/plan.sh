@@ -31,3 +31,11 @@ do_build() {
 		--with-regex=pcre2
 	make
 }
+
+do_install() {
+	make install
+
+	# copy license files to package
+	install -v -Dm644 ${CACHE_PATH}/COPYING ${pkg_prefix}
+	install -v -Dm644 ${CACHE_PATH}/LICENSE ${pkg_prefix}
+}
