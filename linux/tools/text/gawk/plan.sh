@@ -2,7 +2,7 @@ program="gawk"
 
 pkg_name="gawk"
 pkg_origin="core"
-pkg_version="5.3.1"
+pkg_version="5.3.0"
 pkg_maintainer="The Habitat Maintainers <humans@habitat.sh>"
 pkg_description="\
 The awk utility interprets a special-purpose programming language that makes \
@@ -12,7 +12,7 @@ code.\
 pkg_upstream_url="http://www.gnu.org/software/gawk/"
 pkg_license=('GPL-3.0-or-later' 'LGPL-2.0-only')
 pkg_source="http://ftp.gnu.org/gnu/${program}/${program}-${pkg_version}.tar.gz"
-pkg_shasum="fa41b3a85413af87fb5e3a7d9c8fa8d4a20728c67651185bb49c38a7f9382b1e"
+pkg_shasum="378f8864ec21cfceaa048f7e1869ac9b4597b449087caf1eb55e440d30273336"
 pkg_dirname="${program}-${pkg_version}"
 
 pkg_deps=(
@@ -43,6 +43,6 @@ do_install() {
 	do_default_install
 
 	# copy license files to package
-	install -Dm644 ${CACHE_PATH}/COPYING ${pkg_prefix}
-	install -Dm644 ${CACHE_PATH}/missing_d/COPYING.LIB ${pkg_prefix}
+	install -v -Dm644 ${CACHE_PATH}/COPYING ${pkg_prefix}
+	install -v -Dm644 ${CACHE_PATH}/missing_d/COPYING.LIB ${pkg_prefix}
 }
