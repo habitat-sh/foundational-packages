@@ -59,4 +59,6 @@ do_install() {
 		-type f \
 		-exec sed -e "s,exec tclsh,exec $(pkg_path_for tcl)/bin/tclsh,g" -i {} \;
 
+	# copy license files to package
+	install -v -Dm644 ${CACHE_PATH}/license.terms ${pkg_prefix}
 }
