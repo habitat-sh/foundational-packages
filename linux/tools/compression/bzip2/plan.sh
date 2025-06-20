@@ -55,4 +55,7 @@ do_install() {
 	cp -av bzip2-shared "$pkg_prefix/bin/bzip2"
 	ln -sfv bzip2 "$pkg_prefix/bin/bzcat"
 	ln -sfv bzip2 "$pkg_prefix/bin/bunzip2"
+
+	# copy license files to package
+	install -v -Dm644 ${CACHE_PATH}/LICENSE ${pkg_prefix}
 }
