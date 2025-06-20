@@ -22,3 +22,10 @@ pkg_bin_dirs=(bin)
 do_check() {
 	make check
 }
+
+do_install() {
+	do_default_install
+
+	# copy license files to package
+	install -v -Dm644 ${CACHE_PATH}/COPYING ${pkg_prefix}
+}
