@@ -37,4 +37,7 @@ do_install() {
 		--root "${pkg_prefix}" \
 		--locked \
 		--target="${TARGET_ARCH:-${pkg_target%%-*}}-unknown-linux-gnu"
+
+	# copy license files to package
+	install -v -Dm644 ${CACHE_PATH}/LICENSE ${pkg_prefix}
 }
