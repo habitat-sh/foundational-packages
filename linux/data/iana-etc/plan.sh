@@ -24,4 +24,6 @@ do_build() {
 do_install() {
 	mkdir -v "${pkg_prefix}"/etc
 	cp services protocols "${pkg_prefix}"/etc
+
+	# source tarball does not have license files
 }
