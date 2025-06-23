@@ -35,9 +35,6 @@ do_check() {
 do_install() {
 	make install
 
-	# As per the copyright, we must include the copyright statement in binary
-	# distributions
-	#
-	# Source: https://github.com/file/file/blob/master/COPYING
-	install -v -Dm644 COPYING "$pkg_prefix/share/COPYING"
+	# copy license files to package
+	install -v -Dm644 ${CACHE_PATH}/COPYING ${pkg_prefix}
 }
