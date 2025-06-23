@@ -56,6 +56,6 @@ do_install() {
 	# Add a `vi` which symlinks to `vim`
 	ln -sv vim "${pkg_prefix}/bin/vi"
 
-	# Install license file
-	install -Dm644 runtime/doc/uganda.txt "${pkg_prefix}/share/licenses/license.txt"
+	# copy license files to package
+	install -v -Dm644 ${CACHE_PATH}/LICENSE ${pkg_prefix}
 }
