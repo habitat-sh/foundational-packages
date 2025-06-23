@@ -60,9 +60,9 @@ do_build() {
 	make
 }
 
-do_install() {
+do_install () {
 	do_default_install
 
 	# copy license files to package
-	install -Dm644 ${CACHE_PATH}/COPYING ${pkg_prefix}
+	install -v -Dm644 ${CACHE_PATH}/COPYING ${pkg_prefix}
 }
