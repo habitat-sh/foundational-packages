@@ -37,7 +37,8 @@ do_build() {
 }
 
 do_install() {
-	make \
-		PREFIX="${pkg_prefix}" \
-		install
+	make PREFIX="${pkg_prefix}" install
+
+	# copy license files to package
+	install -v -Dm644 ${CACHE_PATH}/LICENSE ${pkg_prefix}
 }
