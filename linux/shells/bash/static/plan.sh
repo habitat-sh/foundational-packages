@@ -46,4 +46,7 @@ do_install() {
 
 	# Remove unnecessary binaries
 	rm -v "${pkg_prefix}/bin/bashbug"
+
+	# copy license files to package
+	install -v -Dm644 ${CACHE_PATH}/COPYING ${pkg_prefix}
 }
