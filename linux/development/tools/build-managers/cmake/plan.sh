@@ -47,7 +47,6 @@ do_prepare() {
 do_build() {
 	mkdir build
 	pushd build || exit 1
-	#-DCMAKE_USE_SYSTEM_LIBRARIES=ON \
 	cmake .. \
 		--install-prefix="${pkg_prefix}" \
 		-DCMAKE_USE_SYSTEM_LIBRARY_CURL=ON \
