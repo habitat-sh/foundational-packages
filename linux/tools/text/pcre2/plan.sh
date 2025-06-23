@@ -52,6 +52,6 @@ do_check() {
 do_install() {
 	make install
 
-	# Install license file
-	install -Dm644 LICENCE "$pkg_prefix/share/licenses/LICENSE"
+	# copy license files to package
+	install -v -Dm644 ${CACHE_PATH}/LICENCE ${pkg_prefix}
 }
