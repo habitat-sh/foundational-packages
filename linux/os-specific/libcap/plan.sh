@@ -38,4 +38,7 @@ do_check() {
 
 do_install() {
 	make prefix="$pkg_prefix" lib=lib sbin=bin install
+
+	# copy license files to package
+	install -v -Dm644 ${CACHE_PATH}/License ${pkg_prefix}
 }
