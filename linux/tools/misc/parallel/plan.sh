@@ -46,3 +46,10 @@ do_prepare() {
 		sed -e "s,/usr/bin/perl,$(pkg_interpreter_for perl bin/perl),g" -i "$f"
 	done
 }
+
+do_install() {
+	do_default_install
+
+	# copy license files to package
+	install -v -Dm644 ${CACHE_PATH}/COPYING ${pkg_prefix}
+}
