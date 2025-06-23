@@ -39,7 +39,6 @@ do_install() {
 		ln -sv busybox "$pkg_prefix/bin/$l"
 	done
 
-	# copy license files in package
-	install -Dm644 ${CACHE_PATH}/LICENSE ${pkg_prefix}
-	#install -Dm644 ${CACHE_PATH}/archival/libarchive/bz/LICENSE ${pkg_prefix}
+	# copy license files to package
+	install -v -Dm644 ${CACHE_PATH}/LICENSE ${pkg_prefix}
 }
