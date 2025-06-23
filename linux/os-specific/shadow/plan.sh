@@ -67,4 +67,7 @@ do_install() {
 	# `./configure`.
 	mv "$pkg_prefix/sbin"/* "$pkg_prefix/bin/"
 	rm -rf "$pkg_prefix/sbin"
+
+	# copy license files to package
+	install -v -Dm644 ${CACHE_PATH}/COPYING ${pkg_prefix}
 }
