@@ -26,3 +26,9 @@ pkg_build_deps=(
 pkg_lib_dirs=(lib)
 pkg_include_dirs=(include)
 pkg_bin_dirs=(bin)
+
+do_install() {
+	do_default_install
+
+	# source tarball does not have license files
+}
