@@ -19,6 +19,9 @@ do_install() {
 	grep -lr '#!.*bin/env node' "$pkg_prefix" | while read -r f; do
 		sed -e "s,#!.*bin/env node,#!$(pkg_interpreter_for node bin/node),g" -i "$f"
 	done
+
+	# copy license files to package
+	install -v -Dm644 ${CACHE_PATH}/COPYING ${pkg_prefix}
 }
 
 do_strip() {
