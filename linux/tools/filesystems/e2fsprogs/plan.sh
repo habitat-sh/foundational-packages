@@ -53,4 +53,7 @@ do_install() {
 	make install
 	fix_interpreter "$pkg_prefix/sbin/*" core/bash bin/bash
 	popd || exit 1
+
+	# copy license files to package
+	install -v -Dm644 ${CACHE_PATH}/NOTICE ${pkg_prefix}
 }
