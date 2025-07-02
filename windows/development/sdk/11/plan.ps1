@@ -1,12 +1,12 @@
 $pkg_name="windows-11-sdk"
 $pkg_origin="core"
-$pkg_version="10.0.22621"
-$pkg_description="The Windows 11 SDK for Windows 11,(servicing release 10.0.22621.2428) provides the latest headers, libraries, metadata, and tools for building Windows 11 apps"
+$pkg_version="10.0.26100"
+$pkg_description="The Windows Software Development Kit (10.1.26100.4188) for Windows 11 provides the latest headers, libraries, metadata, and tools for building Windows apps."
 $pkg_upstream_url="https://developer.microsoft.com/en-us/windows/downloads/windows-10-sdk"
 $pkg_license=@("Microsoft Software License")
 $pkg_maintainer="The Habitat Maintainers <humans@habitat.sh>"
-$pkg_source="https://download.microsoft.com/download/3/b/d/3bd97f81-3f5b-4922-b86d-dc5145cd6bfe/windowssdk/winsdksetup.exe"
-$pkg_shasum="3f73f59566b0cf3eddddaf61ad72bb0c6e4588a5d9e004abf68115b752ebbbd8"
+$pkg_source="https://download.microsoft.com/download/d05f36da-93d2-4b21-9f1a-555b094f7469/KIT_BUNDLE_WINDOWSSDK_MEDIACREATION/winsdksetup.exe"
+$pkg_shasum="cd2f2d69a1913b70e77d52ffd3295bd30e19b3f865a59c3f9b6fae8d852e961d"
 $pkg_build_deps=@("core/lessmsi")
 
 $pkg_bin_dirs=@(
