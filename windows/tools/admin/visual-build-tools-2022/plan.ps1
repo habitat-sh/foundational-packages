@@ -1,6 +1,6 @@
 $pkg_name="visual-build-tools-2022"
 $pkg_origin="core"
-$pkg_version="17.10.4"
+$pkg_version="17.14.7"
 $pkg_description="Standalone compiler, libraries and scripts"
 $pkg_upstream_url="https://visualstudio.microsoft.com/downloads/#build-tools-for-visual-studio-2022"
 $pkg_license=@("Microsoft Software License")
@@ -10,38 +10,31 @@ $pkg_maintainer="The Habitat Maintainers <humans@habitat.sh>"
 # This may cause issues due to differences in the build time and result in a loss of reproducibility. 
 # Instead, we should always use the exact version of the build tools based on the configured version.
 # https://github.com/microsoft/winget-pkgs/tree/master/manifests/m/Microsoft/VisualStudio/2022/BuildTools
-$pkg_source="https://download.visualstudio.microsoft.com/download/pr/7593f7f0-1b5b-43e1-b0a4-cceb004343ca/9a5b493178cde0ec0aa3543d3285c3e037956119ca426aaed14f59d24fe62e90/vs_BuildTools.exe"
-$pkg_shasum="9a5b493178cde0ec0aa3543d3285c3e037956119ca426aaed14f59d24fe62e90"
+$pkg_source="https://aka.ms/vs/17/release/vs_BuildTools.exe"
+$pkg_shasum="a3193e6e6135ef7f598d6a9e429b010d77260dba33dddbee343a47494b5335a3"
 $pkg_build_deps=@("core/7zip")
 
 $pkg_bin_dirs=@(
-    "Contents\VC\Tools\MSVC\14.40.33807\bin\HostX64\x64",
-    "Contents\VC\Redist\MSVC\14.40.33807\x64\Microsoft.VC143.CRT",
-    "Contents\VC\Redist\MSVC\14.40.33807\x86\Microsoft.VC143.CRT", # For packaged 32 bit cmake
-    "Contents\MSBuild\Current\Bin\amd64",
-	"Contents\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin",
-	"Contents\Common7\IDE\CommonExtensions\Microsoft\CMake\Ninja"
+    "Contents\VC\Tools\MSVC\14.44.35207\bin\HostX64\x64",
+    "Contents\VC\Redist\MSVC\14.44.35112\x64\Microsoft.VC143.CRT",
+    "Contents\MSBuild\Current\Bin"
 )
 $pkg_lib_dirs=@(
-    "Contents\VC\Tools\MSVC\14.40.33807\atlmfc\lib\x64",
-    "Contents\VC\Tools\MSVC\14.40.33807\lib\x64"
+    "Contents\VC\Tools\MSVC\14.44.35207\atlmfc\lib\x64",
+    "Contents\VC\Tools\MSVC\14.44.35207\lib\x64"
 )
 $pkg_include_dirs=@(
-    "Contents\VC\Tools\MSVC\14.40.33807\atlmfc\include",
-    "Contents\VC\Tools\MSVC\14.40.33807\include"
+    "Contents\VC\Tools\MSVC\14.44.35207\atlmfc\include",
+    "Contents\VC\Tools\MSVC\14.44.35207\include"
 )
 
 function Invoke-SetupEnvironment {
     Set-RuntimeEnv "DisableRegistryUse" "true"
-    # Setting this Windows Driver Kit variable is necessary to enable
-    # cmake to use this portable build tools package and not query
-    # the windows registry or the vieual studio installer components
-    Set-RuntimeEnv "EnterpriseWDK" "true"
     Set-RuntimeEnv "UseEnv" "true"
-    Set-RuntimeEnv "VCToolsVersion" "14.40.33807"
-    Set-RuntimeEnv "VisualStudioVersion" "17.0"
+    Set-RuntimeEnv "VCToolsVersion" "14.44.35207"
+    Set-RuntimeEnv "VisualStudioVersion" "17.14"
     Set-RuntimeEnv -IsPath "VSINSTALLDIR" "$pkg_prefix\Contents"
-    Set-RuntimeEnv -IsPath "VCToolsInstallDir_170" "$pkg_prefix\Contents\VC\Redist\MSVC\14.40.33807"
+    Set-RuntimeEnv -IsPath "VCToolsInstallDir_170" "$pkg_prefix\Contents\VC\Redist\MSVC\14.44.35207"
     # This prevents msbuild.exe from runniun (for 15 minutes) and locking files after a build completes
     Set-RuntimeEnv "MSBUILDDISABLENODEREUSE" "1"
 }
@@ -61,11 +54,16 @@ function Invoke-Unpack {
 
     $installArgs =  "layout --quiet --layout $HAB_CACHE_SRC_PATH/$pkg_dirname --lang en-US --in $HAB_CACHE_SRC_PATH/$pkg_dirname/vs_bootstrapper_d15/vs_setup_bootstrapper.json"
     $components = @(
-	 "Microsoft.Component.MSBuild",
-	 "Microsoft.VisualStudio.Component.VC.CoreBuildTools",
-         "Microsoft.VisualStudio.Component.VC.Tools.x86.x64",
-	 "Microsoft.VisualStudio.Component.VC.ATLMFC",
-	 "Microsoft.VisualStudio.Component.VC.CMake.Project"	
+		"Microsoft.VisualStudio.Workload.MSBuildTools",
+        "Microsoft.VisualStudio.Workload.VCTools",
+        "Microsoft.VisualStudio.Workload.WebBuildTools",
+        "Microsoft.VisualStudio.Component.VC.Tools.x86.x64",
+        "Microsoft.VisualStudio.Component.SQL.SSDTBuildSku",
+        "Microsoft.VisualStudio.Component.VC.ATLMFC",
+        "Microsoft.VisualStudio.Component.NuGet.BuildTools",
+        "Microsoft.VisualStudio.Component.VC.CLI.Support",
+        "Microsoft.VisualStudio.Component.Windows11SDK.26100",
+        "Microsoft.VisualStudio.Component.VC.CMake.Project"	
     )
     foreach ($component in $components) {
         $installArgs += " --add $component"
@@ -78,7 +76,7 @@ function Invoke-Unpack {
     try {
         Get-ChildItem "$HAB_CACHE_SRC_PATH/$pkg_dirname" -Include *.vsix -Exclude @('*x86*', '*.arm.*') -Recurse | ForEach-Object {
             Rename-Item $_ "$_.zip"
-            Expand-Archive "$_.zip" expanded -force
+            Expand-Archive "$_.zip" vst -force
         }
     } finally { Pop-Location }
 }
@@ -87,6 +85,6 @@ function Invoke-Install {
     # vctip.exe sends telemetry data to microsoft and locks files for several minutes after a build
     # One can opt out via a registry setting which is not practical in a habitat context
     # removing the execurtable is the best option here
-    Get-ChildItem -Path "$HAB_CACHE_SRC_PATH\$pkg_dirname\expanded\Contents" -Recurse -Filter "vctip.exe" -Force | Remove-Item -Force
-    Copy-Item "$HAB_CACHE_SRC_PATH\$pkg_dirname\expanded\Contents" $pkg_prefix -Force -Recurse
+    #Get-ChildItem -Path "$HAB_CACHE_SRC_PATH\$pkg_dirname\expanded\Contents" -Recurse -Filter "vctip.exe" -Force | Remove-Item -Force
+    Copy-Item "$HAB_CACHE_SRC_PATH\$pkg_dirname\vst\Contents" $pkg_prefix -Force -Recurse
 }
