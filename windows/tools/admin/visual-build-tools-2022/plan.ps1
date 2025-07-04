@@ -17,7 +17,10 @@ $pkg_build_deps=@("core/7zip")
 $pkg_bin_dirs=@(
     "Contents\VC\Tools\MSVC\14.44.35207\bin\HostX64\x64",
     "Contents\VC\Redist\MSVC\14.44.35112\x64\Microsoft.VC143.CRT",
-    "Contents\MSBuild\Current\Bin"
+    "Contents\VC\Redist\MSVC\14.44.35207\x86\Microsoft.VC143.CRT", # For packaged 32 bit cmake
+    "Contents\MSBuild\Current\Bin\amd64",
+	"Contents\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin",
+	"Contents\Common7\IDE\CommonExtensions\Microsoft\CMake\Ninja"
 )
 $pkg_lib_dirs=@(
     "Contents\VC\Tools\MSVC\14.44.35207\atlmfc\lib\x64",
@@ -30,11 +33,15 @@ $pkg_include_dirs=@(
 
 function Invoke-SetupEnvironment {
     Set-RuntimeEnv "DisableRegistryUse" "true"
+	# Setting this Windows Driver Kit variable is necessary to enable
+    # cmake to use this portable build tools package and not query
+    # the windows registry or the vieual studio installer components
+    Set-RuntimeEnv "EnterpriseWDK" "true"
     Set-RuntimeEnv "UseEnv" "true"
     Set-RuntimeEnv "VCToolsVersion" "14.44.35207"
-    Set-RuntimeEnv "VisualStudioVersion" "17.14"
+    Set-RuntimeEnv "VisualStudioVersion" "17.0"
     Set-RuntimeEnv -IsPath "VSINSTALLDIR" "$pkg_prefix\Contents"
-    Set-RuntimeEnv -IsPath "VCToolsInstallDir_170" "$pkg_prefix\Contents\VC\Redist\MSVC\14.44.35207"
+    Set-RuntimeEnv -IsPath "VCToolsInstallDir_170" "$pkg_prefix\Contents\VC\Redist\MSVC\14.44.35112"
     # This prevents msbuild.exe from runniun (for 15 minutes) and locking files after a build completes
     Set-RuntimeEnv "MSBUILDDISABLENODEREUSE" "1"
 }
@@ -54,16 +61,11 @@ function Invoke-Unpack {
 
     $installArgs =  "layout --quiet --layout $HAB_CACHE_SRC_PATH/$pkg_dirname --lang en-US --in $HAB_CACHE_SRC_PATH/$pkg_dirname/vs_bootstrapper_d15/vs_setup_bootstrapper.json"
     $components = @(
-		"Microsoft.VisualStudio.Workload.MSBuildTools",
-        "Microsoft.VisualStudio.Workload.VCTools",
-        "Microsoft.VisualStudio.Workload.WebBuildTools",
-        "Microsoft.VisualStudio.Component.VC.Tools.x86.x64",
-        "Microsoft.VisualStudio.Component.SQL.SSDTBuildSku",
-        "Microsoft.VisualStudio.Component.VC.ATLMFC",
-        "Microsoft.VisualStudio.Component.NuGet.BuildTools",
-        "Microsoft.VisualStudio.Component.VC.CLI.Support",
-        "Microsoft.VisualStudio.Component.Windows11SDK.26100",
-        "Microsoft.VisualStudio.Component.VC.CMake.Project"	
+		"Microsoft.Component.MSBuild",
+	 "Microsoft.VisualStudio.Component.VC.CoreBuildTools",
+         "Microsoft.VisualStudio.Component.VC.Tools.x86.x64",
+	 "Microsoft.VisualStudio.Component.VC.ATLMFC",
+	 "Microsoft.VisualStudio.Component.VC.CMake.Project"	
     )
     foreach ($component in $components) {
         $installArgs += " --add $component"
