@@ -17,7 +17,7 @@ $pkg_build_deps=@("core/7zip")
 $pkg_bin_dirs=@(
     "Contents\VC\Tools\MSVC\14.44.35207\bin\HostX64\x64",
     "Contents\VC\Redist\MSVC\14.44.35112\x64\Microsoft.VC143.CRT",
-    "Contents\VC\Redist\MSVC\14.44.35207\x86\Microsoft.VC143.CRT", # For packaged 32 bit cmake
+    "Contents\VC\Redist\MSVC\14.44.35112\x86\Microsoft.VC143.CRT", # For packaged 32 bit cmake
     "Contents\MSBuild\Current\Bin\amd64",
 	"Contents\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin",
 	"Contents\Common7\IDE\CommonExtensions\Microsoft\CMake\Ninja"
