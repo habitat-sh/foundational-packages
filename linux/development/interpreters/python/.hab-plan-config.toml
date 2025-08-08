@@ -4,7 +4,7 @@
 env-script-interpreter-not-found = {ignored_files = ["lib/*"]}
 # These scripts are only used for tests and can be ignored
 host-script-interpreter = {ignored_files = ["lib/python*/test/*"]}
-missing-license = {level = "off", source-shasum = "f400c3fb394b8bef1292f6dc1292c5fadc3533039a5bc0c3e885f3e16738029a"}
+missing-license = {level = "off", source-shasum = "2666038f1521b7a8ec34bf2997b363778118d6f3979282c93723e872bcd464e0"}
 unused-runpath-entry = {level = "off"}
 missing-runpath-entry-dependency = {level = "off"}
 library-dependency-not-found = {level = "off"}

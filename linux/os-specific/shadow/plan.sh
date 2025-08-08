@@ -2,7 +2,7 @@ program="shadow"
 
 pkg_name="shadow"
 pkg_origin="core"
-pkg_version="4.12.3"
+pkg_version="4.17.4"
 pkg_maintainer="The Habitat Maintainers <humans@habitat.sh>"
 pkg_description="\
 Password and account management tool suite.
@@ -10,13 +10,14 @@ Password and account management tool suite.
 pkg_upstream_url="https://github.com/shadow-maint/shadow"
 pkg_license=('Artistic-1.0')
 pkg_source="https://github.com/shadow-maint/${pkg_name}/releases/download/${pkg_version}/${pkg_name}-${pkg_version}.tar.xz"
-pkg_shasum="3d3ec447cfdd11ab5f0486ebc47d15718349d13fea41fc8584568bc118083ccd"
+pkg_shasum="554801054694ff7d8a7abdf0d6ece34e2f16e111673cc01b8c9ee1278451181e"
 pkg_dirname="${program}-${pkg_version}"
 
 pkg_deps=(
 	core/glibc
 	core/attr
 	core/acl
+	core/libxcrypt
 )
 
 pkg_build_deps=(
@@ -43,7 +44,7 @@ do_prepare() {
 	#
 	# Thanks to:
 	# http://www.linuxfromscratch.org/lfs/view/stable/chapter06/shadow.html
-	sed -e 's:#ENCRYPT_METHOD DES:ENCRYPT_METHOD SHA512:' \
+	sed -e 's:#ENCRYPT_METHOD DES:ENCRYPT_METHOD YESCRYPT:' \
 		-e 's:/var/spool/mail:/var/mail:' \
 		-e '/PATH=/{s@/sbin:@@;s@/bin:@@}' \
 		-i etc/login.defs
@@ -52,6 +53,8 @@ do_prepare() {
 
 do_build() {
 	./configure --sysconfdir="${pkg_prefix}/etc" \
+		--with-{b,yes}crypt \
+		--without-libbsd \
 		--with-group-name-max-length=32
 
 	make
@@ -64,4 +67,7 @@ do_install() {
 	# `./configure`.
 	mv "$pkg_prefix/sbin"/* "$pkg_prefix/bin/"
 	rm -rf "$pkg_prefix/sbin"
+
+	# copy license files to package
+	install -v -Dm644 ${CACHE_PATH}/COPYING ${pkg_prefix}
 }

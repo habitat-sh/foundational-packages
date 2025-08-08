@@ -1,6 +1,6 @@
 pkg_name="cacerts"
 pkg_origin="core"
-pkg_version="2023-12-12"
+pkg_version="2025-05-20"
 pkg_description="\
 The Mozilla CA certificate store in PEM format (around 250KB uncompressed).
 "
@@ -8,7 +8,7 @@ pkg_upstream_url="https://curl.se/docs/caextract.html"
 pkg_license=('MPL-2.0')
 pkg_maintainer="The Habitat Maintainers <humans@habitat.sh>"
 pkg_source="http://curl.se/ca/cacert-${pkg_version}.pem"
-pkg_shasum="ccbdfc2fe1a0d7bbbb9cc15710271acf1bb1afe4c8f1725fe95c4c7733fcbe5a"
+pkg_shasum="ab3ee3651977a4178a702b0b828a4ee7b2bbb9127235b0ab740e2e15974bf5db"
 pkg_deps=()
 pkg_build_deps=()
 
@@ -50,4 +50,6 @@ do_install() {
 	mkdir -pv "$pkg_prefix/ssl/certs"
 	cp -v "$pkg_filename" "$pkg_prefix/ssl/certs/cacert.pem"
 	ln -sv certs/cacert.pem "$pkg_prefix/ssl/cert.pem"
+
+	# source tarball does not have license files
 }

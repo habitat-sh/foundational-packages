@@ -3,7 +3,7 @@ program="bash"
 pkg_name="bash"
 pkg_origin="core"
 major_version="5.2"
-patch_version=".21"
+patch_version=".37"
 pkg_version="${major_version}${patch_version}"
 pkg_maintainer="The Habitat Maintainers <humans@habitat.sh>"
 pkg_description="\
@@ -17,7 +17,7 @@ most sh scripts can be run by Bash without modification.\
 pkg_upstream_url="http://www.gnu.org/software/bash/bash.html"
 pkg_license=('GPL-3.0-or-later')
 pkg_source="http://ftp.gnu.org/gnu/${program}/${program}-${pkg_version}.tar.gz"
-pkg_shasum="c8e31bdc59b69aaffc5b36509905ba3e5cbb12747091d27b4b977f078560d5b8"
+pkg_shasum="9599b22ecd1d5787ad7d3b7bf0c59f312b3396d1e281175dd1f8a4014da621ff"
 pkg_dirname="${program}-${pkg_version}"
 pkg_interpreters=(
 	bin/sh
@@ -70,4 +70,7 @@ do_install() {
 
 	# Fix interpreter
 	rm -v "${pkg_prefix}/bin/bashbug"
+
+	# copy license files to package
+	install -v -Dm644 ${CACHE_PATH}/COPYING ${pkg_prefix}
 }

@@ -30,6 +30,9 @@ do_prepare() {
 
 	# Make the path to `stty` absolute from `coreutils`
 	sed -i "s,/bin/stty,$(pkg_path_for coreutils)/bin/stty,g" configure
+
+	# fix for incompatibility with GCC v14.1.x
+	patch -p1 <"$PLAN_CONTEXT/expect-5.45.4-gcc14-1.patch"
 }
 
 do_build() {
@@ -56,4 +59,6 @@ do_install() {
 		-type f \
 		-exec sed -e "s,exec tclsh,exec $(pkg_path_for tcl)/bin/tclsh,g" -i {} \;
 
+	# copy license files to package
+	install -v -Dm644 ${CACHE_PATH}/license.terms ${pkg_prefix}
 }

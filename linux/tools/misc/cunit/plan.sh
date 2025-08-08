@@ -50,4 +50,7 @@ do_install() {
 		-e 's^@includedir@^${prefix}/include^g' \
 		-e "s^@VERSION@-@RELEASE@^${pkg_version}^g" \
 		>"${pkg_prefix}/lib/pkgconfig/cunit.pc"
+
+	# copy license files to package
+	install -v -Dm644 ${CACHE_PATH}/COPYING ${pkg_prefix}
 }

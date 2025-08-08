@@ -1,3 +1,4 @@
 [rules]
-license-not-found = {level = "off", source-shasum = "b2809ca53124c19c60f42bf627736eae011afdcc205bb48270a5ee9a38191531"}
+license-not-found = {level = "off", source-shasum = "3bc776a5f243897415f3b80fb74db3236501d45194c75c7f69012e4ec0128327"}
 unused-runpath-entry = {ignored_files = ["lib/libsqlite3.so*", "bin/sqlite3"]}
+unused-dependency = {ignored_packages = ["core/readline"]}

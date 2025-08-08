@@ -1,6 +1,6 @@
 $pkg_name = "git"
 $pkg_origin = "core"
-$pkg_version = "2.45.1"
+$pkg_version = "2.49.0"
 $pkg_description = "Git is a free and open source distributed version control
   system designed to handle everything from small to very large projects with
   speed and efficiency."
@@ -8,7 +8,7 @@ $pkg_upstream_url = "https://git-scm.com/"
 $pkg_maintainer = "The Habitat Maintainers <humans@habitat.sh>"
 $pkg_license = @("GPL-2.0")
 $pkg_source = "https://github.com/git-for-windows/git/releases/download/v$pkg_version.windows.1/Git-$pkg_version-64-bit.tar.bz2"
-$pkg_shasum = "3314914e47c080e80ddcbc543e374890bdfe4d60e9cd7d0faa996d3d0a174a05"
+$pkg_shasum = "6c5d66e3dd6cd44e50ba7892e9e24ace57934f277a3424c9702a400b3fedc1eb"
 $pkg_bin_dirs = @("bin")
 $pkg_build_deps = @("core/7zip")
 

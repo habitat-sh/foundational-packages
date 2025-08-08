@@ -2,7 +2,7 @@ program="acl"
 
 pkg_name="acl"
 pkg_origin="core"
-pkg_version="2.3.1"
+pkg_version="2.3.2"
 pkg_maintainer="The Habitat Maintainers <humans@habitat.sh>"
 pkg_description="\
 Commands for Manipulating POSIX Access Control Lists.
@@ -10,7 +10,7 @@ Commands for Manipulating POSIX Access Control Lists.
 pkg_upstream_url="https://savannah.nongnu.org/projects/acl/"
 pkg_license=('GPL-2.0-or-later' 'LGPL-2.1-or-later')
 pkg_source="http://download.savannah.gnu.org/releases/${program}/${program}-${pkg_version}.tar.gz"
-pkg_shasum="760c61c68901b37fdd5eefeeaf4c0c7a26bdfdd8ac747a1edff1ce0e243c11af"
+pkg_shasum="5f2bdbad629707aa7d85c623f994aa8a1d2dec55a73de5205bac0bf6058a2f7c"
 pkg_dirname="${program}-${pkg_version}"
 
 pkg_deps=(

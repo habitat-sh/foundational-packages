@@ -1,11 +1,15 @@
 pkg_name=raml2html
 pkg_origin=core
 pkg_version="7.8.0"
-pkg_maintainer="The Habitat Maintainers <humans@habitat.sh>"
-pkg_license=('MIT')
-pkg_deps=(core/node)
 pkg_description="RAML to HTML documentation generator."
 pkg_upstream_url="https://github.com/raml2html/raml2html"
+pkg_maintainer="The Habitat Maintainers <humans@habitat.sh>"
+pkg_license=('MIT')
+
+pkg_deps=(
+	core/node
+)
+
 pkg_bin_dirs=(bin)
 
 do_build() {
@@ -19,6 +23,8 @@ do_install() {
 	grep -lr '#!.*bin/env node' "$pkg_prefix" | while read -r f; do
 		sed -e "s,#!.*bin/env node,#!$(pkg_interpreter_for node bin/node),g" -i "$f"
 	done
+
+	# source tarball does not have license files
 }
 
 do_strip() {

@@ -1,6 +1,6 @@
 pkg_name="libiconv"
 pkg_origin="core"
-pkg_version="1.17"
+pkg_version="1.18"
 pkg_maintainer="The Habitat Maintainers <humans@habitat.sh>"
 pkg_description="Some programs, like mailers and web browsers, must be able to convert \
 between a given text encoding and the user's encoding.  Other programs \
@@ -12,7 +12,7 @@ applications."
 pkg_upstream_url="https://www.gnu.org/software/libiconv/"
 pkg_license=('GPL-3.0-or-later' 'LGPL-2.0-or-later')
 pkg_source="https://ftp.gnu.org/pub/gnu/libiconv/libiconv-${pkg_version}.tar.gz"
-pkg_shasum="8f74213b56238c85a50a5329f77e06198771e70dd9a739779f4c02f65d971313"
+pkg_shasum="3b08f5f4f9b4eb82f151a7040bfd6fe6c6fb922efe4b1659c66ea933276965e8"
 
 pkg_deps=(
 	core/glibc

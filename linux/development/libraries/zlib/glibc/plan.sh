@@ -4,10 +4,7 @@ pkg_name="zlib"
 pkg_origin="core"
 pkg_version="1.3.1"
 pkg_maintainer="The Habitat Maintainers <humans@habitat.sh>"
-pkg_description="\
-Compression library implementing the deflate compression method found in gzip \
-and PKZIP.\
-"
+pkg_description="Compression library implementing the deflate compression method found in gzip and PKZIP."
 pkg_upstream_url="http://www.zlib.net/"
 pkg_license=('Zlib')
 pkg_source="http://zlib.net/${program}-${pkg_version}.tar.gz"

@@ -1,8 +1,6 @@
 [rules]
 host-script-interpreter = {level = "off"}
-license-not-found = {level = "off", source-shasum = "04e96c2404ea70c590c546eba4202a4e12722c640016c12b9b2f1ce3d481e9a8"}
-missing-license = {level = "off", source-shasum = "04e96c2404ea70c590c546eba4202a4e12722c640016c12b9b2f1ce3d481e9a8"}
-unused-dependency = {ignored_packages = [
-    "core/{coreutils,m4,binutils,sed,grep,file}"
-]}
+license-not-found = {level = "off", source-shasum = "da8ebb2ce4dcf46b90098daf962cffa68f4b4f62ea60f798d0ef12929ede6adf"}
+missing-license = {level = "off", source-shasum = "da8ebb2ce4dcf46b90098daf962cffa68f4b4f62ea60f798d0ef12929ede6adf"}
+unused-dependency = {ignored_packages = [ "core/{coreutils,m4,binutils,sed,grep,file}"]}
 unused-runpath-entry = {level = "off"}

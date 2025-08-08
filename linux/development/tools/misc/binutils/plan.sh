@@ -2,7 +2,7 @@ program="binutils"
 
 pkg_name="binutils"
 pkg_origin="core"
-pkg_version="2.39"
+pkg_version="2.44"
 pkg_maintainer="The Habitat Maintainers <humans@habitat.sh>"
 pkg_description="\
 The GNU Binary Utilities, or binutils, are a set of programming tools for \
@@ -12,7 +12,7 @@ and assembly source code.\
 pkg_upstream_url="https://www.gnu.org/software/binutils/"
 pkg_license=('GPL-3.0-or-later')
 pkg_source="http://ftp.gnu.org/gnu/${program}/${program}-${pkg_version}.tar.bz2"
-pkg_shasum="da24a84fef220102dd24042df06fdea851c2614a5377f86effa28f33b7b16148"
+pkg_shasum="f66390a661faa117d00fab2e79cf2dc9d097b42cc296bf3f8677d1e7b452dc3a"
 pkg_dirname="${program}-${pkg_version}"
 pkg_bin_dirs=(
 	bin
@@ -51,10 +51,10 @@ do_prepare() {
 		sed -i "$f" -e 's|-lfl|-l:libfl.a|'
 	done
 
-	sed -i /hab/cache/src/binutils-2.39/ld/configure -e 's|-lfl|-l:libfl.a|'
+	sed -i /hab/cache/src/binutils-${pkg_version}/ld/configure -e 's|-lfl|-l:libfl.a|'
 	# Use symlinks instead of hard links to save space (otherwise `strip(1)`
 	# needs to process each hard link seperately)
-	for f in binutils/Makefile.in gas/Makefile.in ld/Makefile.in gold/Makefile.in; do
+	for f in binutils/Makefile.in gas/Makefile.in ld/Makefile.in; do
 		sed -i "$f" -e 's|ln |ln -s |'
 	done
 }
@@ -62,7 +62,6 @@ do_prepare() {
 do_build() {
 	./configure \
 		--prefix=$pkg_prefix \
-		--enable-gold \
 		--enable-gprofng=no \
 		--enable-ld=default \
 		--enable-shared \
@@ -89,7 +88,6 @@ do_strip() {
 do_install() {
 	make tooldir="${pkg_prefix}" install
 	wrap_binary "ld.bfd"
-	wrap_binary "ld.gold"
 	# Remove unnecessary binaries
 	rm -v "${pkg_prefix:?}"/lib/lib{bfd,ctf,ctf-nobfd,opcodes}.{a,la}
 }

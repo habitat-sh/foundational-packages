@@ -1,13 +1,13 @@
 pkg_name="e2fsprogs"
 pkg_origin="core"
-pkg_version="1.46.4"
+pkg_version="1.47.2"
 pkg_maintainer="The Habitat Maintainers <humans@habitat.sh>"
 pkg_description="Ext2/3/4 filesystem userspace utilities"
 # https://github.com/tytso/e2fsprogs/blob/v1.46.4/NOTICE
 pkg_license=('GPL-2.0-or-later' 'LGPL-2.0-or-later' 'MIT')
 pkg_upstream_url="http://e2fsprogs.sourceforge.net/"
 pkg_source="https://git.kernel.org/pub/scm/fs/ext2/e2fsprogs.git/snapshot/e2fsprogs-${pkg_version}.tar.gz"
-pkg_shasum="c011bf3bf4ae5efe9fa2b0e9b0da0c14ef4b79c6143c1ae6d9f027931ec7abe1"
+pkg_shasum="be7edd7031734d1fef8a319f0901828f8ab89e8f3b5073e6b18740be3771a95c"
 pkg_deps=(
 	core/glibc
 	core/util-linux
@@ -53,4 +53,7 @@ do_install() {
 	make install
 	fix_interpreter "$pkg_prefix/sbin/*" core/bash bin/bash
 	popd || exit 1
+
+	# copy license files to package
+	install -v -Dm644 ${CACHE_PATH}/NOTICE ${pkg_prefix}
 }

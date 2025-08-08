@@ -60,4 +60,8 @@ do_check() {
 
 do_install() {
 	make -f unix/Makefile prefix="${pkg_prefix}" install
+
+	# copy license files to package
+	install -v -Dm644 ${CACHE_PATH}/COPYING.OLD ${pkg_prefix}
+	install -v -Dm644 ${CACHE_PATH}/LICENSE ${pkg_prefix}
 }

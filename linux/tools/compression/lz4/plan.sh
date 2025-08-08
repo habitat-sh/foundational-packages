@@ -1,6 +1,6 @@
 pkg_name="lz4"
 pkg_origin="core"
-pkg_version="1.9.4"
+pkg_version="1.10.0"
 pkg_license=('BSD-2-Clause' 'GPL-2.0-or-later')
 pkg_source="https://github.com/lz4/lz4/archive/refs/tags/v${pkg_version}.tar.gz"
 pkg_upstream_url="https://lz4.github.io/lz4/"
@@ -10,7 +10,7 @@ applications. It also features an extremely fast decoder, with speed in \
 multiple GB/s per core, typically reaching RAM speed limits on \
 multi-core systems."
 pkg_maintainer="The Habitat Maintainers <humans@habitat.sh>"
-pkg_shasum="0b0e3aa07c8c063ddf40b082bdf7e37a1562bda40a0ff5272957f3e987e0e54b"
+pkg_shasum="537512904744b35e232912055ccf8ec66d768639ff3abe5788d90d792ec5f48b"
 pkg_deps=(
 	core/glibc
 )
@@ -37,7 +37,8 @@ do_build() {
 }
 
 do_install() {
-	make \
-		PREFIX="${pkg_prefix}" \
-		install
+	make PREFIX="${pkg_prefix}" install
+
+	# copy license files to package
+	install -v -Dm644 ${CACHE_PATH}/LICENSE ${pkg_prefix}
 }

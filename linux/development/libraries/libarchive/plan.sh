@@ -1,13 +1,13 @@
 program="libarchive"
 pkg_name="libarchive"
 pkg_origin="core"
-pkg_version="3.7.4"
+pkg_version="3.8.1"
 pkg_maintainer="The Habitat Maintainers <humans@habitat.sh>"
 pkg_description="Multi-format archive and compression library"
 pkg_upstream_url="https://www.libarchive.org"
 pkg_license=('BSD-2-Clause')
 pkg_source="http://www.libarchive.org/downloads/${program}-${pkg_version}.tar.gz"
-pkg_shasum="7875d49596286055b52439ed42f044bd8ad426aa4cc5aabd96bfe7abb971d5e8"
+pkg_shasum="bde832a5e3344dc723cfe9cc37f8e54bde04565bfe6f136bc1bd31ab352e9fab"
 pkg_dirname="${program}-${pkg_version}"
 pkg_deps=(
 	core/acl

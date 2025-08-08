@@ -1,6 +1,6 @@
 pkg_name="mg"
 pkg_origin="core"
-pkg_version="20230501"
+pkg_version="20250523"
 pkg_maintainer="The Habitat Maintainers <humans@habitat.sh>"
 pkg_description="\
 mg is Micro GNU/emacs, this is a portable version of the mg maintained by the \
@@ -9,7 +9,7 @@ OpenBSD team.\
 pkg_upstream_url="https://github.com/hboetes/mg"
 pkg_license=('LicenseRef-Public-Domain')
 pkg_source="https://github.com/hboetes/$pkg_name/archive/$pkg_version.tar.gz"
-pkg_shasum="e2878feca64067a0c524e456ffba68d8cb69bcdce0943d2f2b69cad06174462e"
+pkg_shasum="2bb668474a9f4b9edd5bba12677cc5ac9fd788f5187a100c880d74c328c874d0"
 
 pkg_deps=(
 	core/glibc
@@ -21,6 +21,7 @@ pkg_build_deps=(
 	core/coreutils
 	core/gcc
 	core/pkg-config
+	core/libmd
 )
 
 pkg_bin_dirs=(bin)

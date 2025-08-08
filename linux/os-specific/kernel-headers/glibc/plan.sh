@@ -21,4 +21,7 @@ do_build() {
 do_install() {
 	find usr/include -type f ! -name '*.h' -delete
 	cp -rv usr/include "$pkg_prefix"
+
+	# copy license files to package
+	install -v -Dm644 ${CACHE_PATH}/COPYING ${pkg_prefix}
 }

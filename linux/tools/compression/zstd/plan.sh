@@ -2,14 +2,14 @@ program="zstd"
 
 pkg_origin="core"
 pkg_name="zstd"
-pkg_version="1.5.2"
+pkg_version="1.5.7"
 pkg_maintainer="The Habitat Maintainers <humans@habitat.sh>"
 pkg_license=('BSD-3-Clause OR GPL-2.0-only')
 pkg_description="Zstandard is a real-time compression algorithm, providing high compression ratios. \
 It offers a very wide range of compression / speed trade-off, while being backed by a very fast decoder"
 pkg_upstream_url="http://facebook.github.io/zstd/"
 pkg_source="https://github.com/facebook/zstd/archive/v${pkg_version}.tar.gz"
-pkg_shasum="f7de13462f7a82c29ab865820149e778cbfe01087b3a55b5332707abf9db4a6e"
+pkg_shasum="37d7284556b20954e56e1ca85b80226768902e2edabd3b649e9e72c0c9012ee3"
 pkg_dirname="${program}-${pkg_version}"
 
 pkg_deps=(
@@ -30,10 +30,6 @@ pkg_include_dirs=(include)
 pkg_lib_dirs=(lib)
 pkg_pconfig_dirs=(lib/pkgconfig)
 
-do_prepare() {
-	patch -p1 <"$PLAN_CONTEXT/zstd-1.5.2-upstream_fixes-1.patch"
-}
-
 do_build() {
 	make PREFIX="${pkg_prefix}"
 }
@@ -47,4 +43,6 @@ do_check() {
 do_install() {
 	make install
 
+	# copy license files to package
+	install -v -Dm644 ${CACHE_PATH}/COPYING ${pkg_prefix}
 }

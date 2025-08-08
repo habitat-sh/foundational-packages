@@ -2,7 +2,7 @@ program="openssl"
 
 pkg_name="openssl-stage1"
 pkg_origin="core"
-pkg_version="3.0.9"
+pkg_version="3.1.2"
 pkg_maintainer="The Habitat Maintainers <humans@habitat.sh>"
 pkg_description="\
 OpenSSL is an open source project that provides a robust, commercial-grade, \
@@ -13,7 +13,7 @@ library.\
 pkg_upstream_url="https://www.openssl.org"
 pkg_license=('Apache-2.0')
 pkg_source="https://www.openssl.org/source/${program}-${pkg_version}.tar.gz"
-pkg_shasum="eb1ab04781474360f77c318ab89d8c5a03abc38e63d65a603cabbf1b00a1dc90"
+pkg_shasum="a0ce69b8b97ea6a35b96875235aa453b966ba3cba8af2de23657d8b6767d6539"
 pkg_dirname="${program}-${pkg_version}"
 pkg_deps=(
 	core/glibc
