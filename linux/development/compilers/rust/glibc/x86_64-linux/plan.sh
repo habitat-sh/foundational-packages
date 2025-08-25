@@ -34,7 +34,7 @@ _target_sources=(
 )
 
 _target_shasums=(
-    "7f42d43feaf78ec253cc6bc82c4ab3f69f260db2b3bf987395e543a4d36004af"
+    "1f5865353c288eec6bd5217f8055a6e580b3a7eb2dd756250d70edab2374ee9b"
 )
 
 do_prepare() {
