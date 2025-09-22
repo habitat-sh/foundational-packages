@@ -1,6 +1,6 @@
 pkg_name="sqlite"
-pkg_version="3.50.0"
-pkg_dist_version="3500000"
+pkg_version="3.50.4"
+pkg_dist_version="3500400"
 pkg_origin="core"
 pkg_license=('LicenseRef-Public-Domain' 'BSD-2-Clause-Views')
 pkg_maintainer="The Habitat Maintainers <humans@habitat.sh>"
@@ -9,7 +9,7 @@ pkg_upstream_url=https://www.sqlite.org/
 pkg_source="https://www.sqlite.org/2025/${pkg_name}-autoconf-${pkg_dist_version}.tar.gz"
 pkg_filename="${pkg_name}-autoconf-${pkg_dist_version}.tar.gz"
 pkg_dirname="${pkg_name}-autoconf-${pkg_dist_version}"
-pkg_shasum="3bc776a5f243897415f3b80fb74db3236501d45194c75c7f69012e4ec0128327"
+pkg_shasum="a3db587a1b92ee5ddac2f66b3edb41b26f9c867275782d46c3a088977d6a5b18"
 pkg_deps=(
 	core/glibc
 	core/readline
