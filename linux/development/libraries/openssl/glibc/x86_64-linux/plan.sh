@@ -85,6 +85,15 @@ do_check() {
 do_install() {
 	do_default_install
 	cp $CACHE_PATH/LICENSE.txt "$pkg_prefix"
+
+	# Modify openssl.cnf for FIPS configuration
+	sed -i "s|# .include fipsmodule.cnf|.include ${pkg_prefix}/ssl/fipsmodule.cnf|g" "$pkg_prefix/ssl/openssl.cnf"
+	sed -i 's|# fips = fips_sect|fips = fips_sect|g' "$pkg_prefix/ssl/openssl.cnf"
+	sed -i 's|# activate = 1|activate = 1|g' "$pkg_prefix/ssl/openssl.cnf"
+
+	# Add [fips_sect] section after activate = 1
+	sed -i '/activate = 1/a\\n[fips_sect]' "$pkg_prefix/ssl/openssl.cnf"
+
 	# Remove dependency on Perl at runtime
 	rm -rfv "$pkg_prefix/ssl/misc" "$pkg_prefix/bin/c_rehash"
 }
