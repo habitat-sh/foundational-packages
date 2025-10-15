@@ -91,8 +91,14 @@ do_install() {
 	sed -i 's|# fips = fips_sect|fips = fips_sect|g' "$pkg_prefix/ssl/openssl.cnf"
 	sed -i 's|# activate = 1|activate = 1|g' "$pkg_prefix/ssl/openssl.cnf"
 
+	# Add alg_section after providers = provider_sect in [openssl_init] section
+    sed -i '/providers = provider_sect/a alg_section = algorithm_sect' "$pkg_prefix/ssl/openssl.cnf"
+
 	# Add [fips_sect] section after activate = 1
 	sed -i '/activate = 1/a\\n[fips_sect]' "$pkg_prefix/ssl/openssl.cnf"
+
+	# Add [algorithm_sect] section after fips = fips_sect with configuration
+    sed -i '/fips = fips_sect/a\\n[algorithm_sect]\ndefault_properties = fips=yes' "$pkg_prefix/ssl/openssl.cnf"
 
 	# Remove dependency on Perl at runtime
 	rm -rfv "$pkg_prefix/ssl/misc" "$pkg_prefix/bin/c_rehash"
