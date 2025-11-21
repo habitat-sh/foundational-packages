@@ -1,6 +1,7 @@
+#shellcheck disable=SC2034,SC2154,SC2164
 pkg_name="rust"
 pkg_origin="core"
-pkg_version="1.89.0"
+pkg_version="1.91.1"
 pkg_maintainer="The Habitat Maintainers <humans@habitat.sh>"
 pkg_description="\
 Rust is a systems programming language that runs blazingly fast, prevents \
@@ -10,7 +11,7 @@ pkg_upstream_url="https://www.rust-lang.org/"
 pkg_license=('Apache-2.0' 'MIT')
 _url_base="https://static.rust-lang.org/dist"
 pkg_source="$_url_base/${pkg_name}-${pkg_version}-x86_64-unknown-linux-gnu.tar.gz"
-pkg_shasum="542f517d0624cbee516627221482b166bf0ffe5fd560ec32beb778c01f5c99b6"
+pkg_shasum="1c955c040dd087e4751d15588ddec288b4208bea16f8ec5046c164877e55fff7"
 pkg_dirname="${pkg_name}-${pkg_version}-x86_64-unknown-linux-gnu"
 pkg_deps=(
 	core/binutils
@@ -25,7 +26,6 @@ pkg_build_deps=(
 	core/build-tools-patchelf
 	core/build-tools-coreutils
 )
-
 pkg_bin_dirs=(bin)
 pkg_lib_dirs=(lib)
 
@@ -34,7 +34,7 @@ _target_sources=(
 )
 
 _target_shasums=(
-    "1f5865353c288eec6bd5217f8055a6e580b3a7eb2dd756250d70edab2374ee9b"
+    "7dca0fe5f11174708007eb53546ea95aad8c37dfd6c3cb064c5f1c652ed6b0f2"
 )
 
 do_prepare() {
