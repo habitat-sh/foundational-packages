@@ -136,7 +136,7 @@ jobs:
           
           AUTH_TOKEN="${{ inputs.hab_auth_token }}"
           if [ -z "${AUTH_TOKEN}" ]; then
-            AUTH_TOKEN="${{ secrets.HAB_AUTH_TOKEN }}"
+            AUTH_TOKEN="${{ secrets.HAB_PUBLIC_BLDR_PAT }}"
           fi
           if [ -n "${AUTH_TOKEN}" ]; then
             INSTALL_CMD="${INSTALL_CMD} --auth ${AUTH_TOKEN}"
@@ -164,7 +164,7 @@ jobs:
           
           $AuthToken = "${{ inputs.hab_auth_token }}"
           if ([string]::IsNullOrEmpty($AuthToken)) {
-            $AuthToken = "${{ secrets.HAB_AUTH_TOKEN }}"
+            $AuthToken = "${{ secrets.HAB_PUBLIC_BLDR_PAT }}"
           }
           if (-not [string]::IsNullOrEmpty($AuthToken)) {
             $InstallCmd = "${InstallCmd} --auth ${AuthToken}"
