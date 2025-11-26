@@ -144,13 +144,14 @@ jobs:
           [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072;
           iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/habitat-sh/habitat/main/components/hab/install.ps1'))
           $env:PATH += ";~\bin\hab-1.6.1245-20250905141844-x86_64-windows"
-          ls "~\bin\hab-1.6.1245-20250905141844-x86_64-windows"
           Write-Host "one"
           ls ~/bin
           Write-Host "two"
           ls c:/users/runneradmin/bin
           Write-Host "three"
           ls c:/hab
+          ls "~\bin\hab-1.6.1245-20250905141844-x86_64-windows"
+          
           Write-Host "end"
       
       - name: Configure Habitat (Windows)
