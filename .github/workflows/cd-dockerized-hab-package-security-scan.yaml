@@ -137,10 +137,13 @@ jobs:
           AUTH_TOKEN="${{ inputs.hab_auth_token }}"
           if [ -z "${AUTH_TOKEN}" ]; then
             AUTH_TOKEN="${{ secrets.HAB_PUBLIC_BLDR_PAT }}"
+            echo "Using token from repository secret"
+          else
+            echo "Using token from workflow input"
           fi
-          if [ -n "${AUTH_TOKEN}" ]; then
-            INSTALL_CMD="${INSTALL_CMD} --auth ${AUTH_TOKEN}"
-          fi
+          # if [ -n "${AUTH_TOKEN}" ]; then
+          #   INSTALL_CMD="${INSTALL_CMD} --auth ${AUTH_TOKEN}"
+          # fi
           
           echo "Installing: ${INSTALL_CMD}"
           eval ${INSTALL_CMD}
@@ -165,10 +168,13 @@ jobs:
           $AuthToken = "${{ inputs.hab_auth_token }}"
           if ([string]::IsNullOrEmpty($AuthToken)) {
             $AuthToken = "${{ secrets.HAB_PUBLIC_BLDR_PAT }}"
+            Write-Host "Using token from repository secret"
+          else
+            Write-Host "Using token from workflow input"
           }
-          if (-not [string]::IsNullOrEmpty($AuthToken)) {
-            $InstallCmd = "${InstallCmd} --auth ${AuthToken}"
-          }
+          # if (-not [string]::IsNullOrEmpty($AuthToken)) {
+          #   $InstallCmd = "${InstallCmd} --auth ${AuthToken}"
+          # }
           
           Write-Host "Installing: ${InstallCmd}"
           Invoke-Expression $InstallCmd
