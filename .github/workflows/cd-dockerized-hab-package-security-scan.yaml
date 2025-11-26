@@ -169,7 +169,7 @@ jobs:
           if ([string]::IsNullOrEmpty($AuthToken)) {
             $AuthToken = "${{ secrets.HAB_PUBLIC_BLDR_PAT }}"
             Write-Host "Using token from repository secret"
-          else
+          } elseif {
             Write-Host "Using token from workflow input"
           }
           # if (-not [string]::IsNullOrEmpty($AuthToken)) {
