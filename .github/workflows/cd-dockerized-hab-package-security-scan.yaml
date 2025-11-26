@@ -122,7 +122,7 @@ jobs:
           # run grype in runner
           grype dir:$PKG_PATH --name ${{ inputs.hab_package }} 
           # run grype to output to file (which is uploaded to the job as an artifact)
-          OUTPUT_FILE="grype-results-${{ inputs.hab_package }}.txt"
+          OUTPUT_FILE="grype-results-ubuntu-${{ inputs.hab_package }}.txt"
           OUTPUT_FILE="${OUTPUT_FILE//\//-}"
           echo $OUTPUT_FILE
           grype dir:$PKG_PATH --name ${{ inputs.hab_package }} > $OUTPUT_FILE
@@ -131,7 +131,7 @@ jobs:
       - name: Upload Grype Scan Results
         uses: actions/upload-artifact@v4
         with:
-          name: grype-results-${{ matrix.os }}
+          name: grype-results-ubuntu-${{ env.OUTPUT_FILE }}
           path: ${{ env.OUTPUT_FILE }}
 
   grype-scan-windows:
@@ -195,7 +195,7 @@ jobs:
           if ([string]::IsNullOrEmpty($AuthToken)) {
             $AuthToken = "${{ secrets.HAB_PUBLIC_BLDR_PAT }}"
             Write-Host "Using token from repository secret"
-          } elseif {
+          } else {
             Write-Host "Using token from workflow input"
           }
           # if (-not [string]::IsNullOrEmpty($AuthToken)) {
@@ -213,7 +213,7 @@ jobs:
           # run grype in runner
           grype dir:$PKG_PATH --name ${{ inputs.hab_package }} 
           # run grype to output to file (which is uploaded to the job as an artifact)
-          OUTPUT_FILE="grype-results-${{ inputs.hab_package }}.txt"
+          OUTPUT_FILE="grype-results-windows-${{ inputs.hab_package }}.txt"
           OUTPUT_FILE="${OUTPUT_FILE//\//-}"
           echo $OUTPUT_FILE
           grype dir:$PKG_PATH --name ${{ inputs.hab_package }} > $OUTPUT_FILE
@@ -222,5 +222,5 @@ jobs:
       - name: Upload Grype Scan Results
         uses: actions/upload-artifact@v4
         with:
-          name: grype-results-${{ matrix.os }}
+          name: grype-results-windows-${{ env.OUTPUT_FILE }}
           path: ${{ env.OUTPUT_FILE }}
