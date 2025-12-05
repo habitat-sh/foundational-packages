@@ -73,8 +73,6 @@ do_build() {
 		enable-fips
 
 	make -j"$(nproc)"
-	cp -v $(pkg_path_for core/openssl-stage1)/ssl/fipsmodule.cnf ./providers/
-	cp -v $(pkg_path_for core/openssl-stage1)/lib64/ossl-modules/fips.so ./providers/
 
 }
 
@@ -85,14 +83,33 @@ do_check() {
 do_install() {
 	do_default_install
 	cp $CACHE_PATH/LICENSE.txt "$pkg_prefix"
+	cp -v $(pkg_path_for core/openssl-stage1)/ssl/fipsmodule.cnf ${pkg_prefix}/ssl/
+	cp -v $(pkg_path_for core/openssl-stage1)/lib64/ossl-modules/fips.so ${pkg_prefix}/lib64/ossl-modules/
+
+	# Replace the first two lines of fipsmodule.cnf with comprehensive configuration
+	sed -i '1,2c\
+openssl_conf = openssl_init\
+\
+[openssl_init]\
+providers   = provider_sect\
+alg_section = algorithm_sect\
+\
+[provider_sect]\
+fips   = fips_sect\
+\
+[fips_sect]\
+activate = 1\
+\
+[algorithm_sect]\
+default_properties = fips=yes' "$pkg_prefix/ssl/fipsmodule.cnf"
 
 	# Modify openssl.cnf for FIPS configuration
-	sed -i "s|# .include fipsmodule.cnf|.include ${pkg_prefix}/ssl/fipsmodule.cnf|g" "$pkg_prefix/ssl/openssl.cnf"
+	#sed -i "s|# .include fipsmodule.cnf|.include ${pkg_prefix}/ssl/fipsmodule.cnf|g" "$pkg_prefix/ssl/openssl.cnf"
 	sed -i 's|# fips = fips_sect|fips = fips_sect|g' "$pkg_prefix/ssl/openssl.cnf"
 	sed -i 's|# activate = 1|activate = 1|g' "$pkg_prefix/ssl/openssl.cnf"
 
 	# Add [fips_sect] section after activate = 1
-	sed -i '/activate = 1/a\\n[fips_sect]' "$pkg_prefix/ssl/openssl.cnf"
+	sed -i '/activate = 1/a\\n[fips_sect]\nactivate = 1' "$pkg_prefix/ssl/openssl.cnf"
 
 	# Remove dependency on Perl at runtime
 	rm -rfv "$pkg_prefix/ssl/misc" "$pkg_prefix/bin/c_rehash"
