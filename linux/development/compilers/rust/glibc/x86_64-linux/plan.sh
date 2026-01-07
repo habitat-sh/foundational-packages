@@ -21,6 +21,7 @@ pkg_deps=(
 	core/iana-etc
 	core/tzdata
 	core/zlib
+	core/hab-ld-wrapper
 )
 pkg_build_deps=(
 	core/build-tools-patchelf
@@ -147,8 +148,48 @@ do_install() {
 	# RUSTFLAGS to ensure the library's detection during the linking process.
 	wrap_rustc_binary
 
+	# The whole `lld` default Saga -
+	# TLDR; Since 1.90.0 `rust` enabled the `lld` by default that doesn't work with our
+	# non-standard paths and custom runtime `linker`. We just continue to use the *old*
+	# `ld.bfd` linker from `core/binutils`
+	#
+	# With the introduction of the `lld` linker, during the compilation of dependencies -
+	# running the `build-script-build` binaries fail to run causing compilation failure.
+	# This is because the binaries are dynamically linked even though we are trying to build
+	# statically linked binaries for the *target* (`x86_64-unknown-linux-musl` in our case).
+	#
+	# We can disable the `lld` default linker using `RUSTFLAGS` - but they are not honoured when
+	# `--target` is set as we do. In short we cannot disable the `lld` linker for the
+	# `build-script-build` compilation. With `lld` linker the `rpath` entries are not added in
+	# the generated binaries and hence they cannot be run.
+	#
+	# If we use our standard technique of wrapping with the wrapper calling original binary
+	# named `ld.lld.real`, this fails because `rustc`s `ld-wrapper` script expects the *called*
+	# binary name to be `ld.lld`. This leaves us with only choice of *wrapping* the *old*
+	# `ld.bfd.real` binary from the `core/binutils` package.
+	wrap_lld_linker "$pkg_prefix"/lib/rustlib/x86_64-unknown-linux-gnu/bin/gcc-ld/ld.lld \
+		"$(pkg_path_for binutils)"/bin/ld.bfd.real
+
 	# Delete the uninstaller script as it is not required
 	rm "${pkg_prefix}"/lib/rustlib/uninstall.sh
+}
+
+wrap_lld_linker() {
+	local wrapper_binary
+	local actual_binary
+
+	actual_binary="$2"
+	wrapper_binary="$1"
+
+	local hab_ld_wrapper
+	hab_ld_wrapper="$(pkg_path_for hab-ld-wrapper)"
+
+	sed "$PLAN_CONTEXT/ld-wrapper.sh" \
+		-e "s^@wrapper@^${hab_ld_wrapper}/bin/hab-ld-wrapper^g" \
+		-e "s^@program@^${actual_binary}^g" \
+		>"$wrapper_binary"
+
+	chmod 755 "$wrapper_binary"
 }
 
 wrap_rustc_binary() {
