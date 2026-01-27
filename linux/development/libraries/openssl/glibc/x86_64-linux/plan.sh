@@ -2,7 +2,7 @@ program="openssl"
 
 pkg_name="openssl"
 pkg_origin="core"
-pkg_version="3.5.0"
+pkg_version="3.5.4"
 pkg_maintainer="The Habitat Maintainers <humans@habitat.sh>"
 pkg_description="\
 OpenSSL is an open source project that provides a robust, commercial-grade, \
@@ -13,7 +13,7 @@ library.\
 pkg_upstream_url="https://www.openssl.org"
 pkg_license=('Apache-2.0')
 pkg_source="https://www.openssl.org/source/${program}-${pkg_version}.tar.gz"
-pkg_shasum="344d0a79f1a9b08029b0744e2cc401a43f9c90acd1044d09a530b4885a8e9fc0"
+pkg_shasum="967311f84955316969bdb1d8d4b983718ef42338639c621ec4c34fddef355e99"
 pkg_dirname="${program}-${pkg_version}"
 pkg_deps=(
 	core/glibc
@@ -73,7 +73,6 @@ do_build() {
 		enable-fips
 
 	make -j"$(nproc)"
-
 }
 
 do_check() {
@@ -82,34 +81,9 @@ do_check() {
 
 do_install() {
 	do_default_install
-	cp $CACHE_PATH/LICENSE.txt "$pkg_prefix"
-	cp -v $(pkg_path_for core/openssl-stage1)/ssl/fipsmodule.cnf ${pkg_prefix}/ssl/
-	cp -v $(pkg_path_for core/openssl-stage1)/lib64/ossl-modules/fips.so ${pkg_prefix}/lib64/ossl-modules/
-
-	# Replace the first two lines of fipsmodule.cnf with comprehensive configuration
-	sed -i '1,2c\
-openssl_conf = openssl_init\
-\
-[openssl_init]\
-providers   = provider_sect\
-alg_section = algorithm_sect\
-\
-[provider_sect]\
-fips   = fips_sect\
-\
-[fips_sect]\
-activate = 1\
-\
-[algorithm_sect]\
-default_properties = fips=yes' "$pkg_prefix/ssl/fipsmodule.cnf"
-
-	# Modify openssl.cnf for FIPS configuration
-	#sed -i "s|# .include fipsmodule.cnf|.include ${pkg_prefix}/ssl/fipsmodule.cnf|g" "$pkg_prefix/ssl/openssl.cnf"
-	sed -i 's|# fips = fips_sect|fips = fips_sect|g' "$pkg_prefix/ssl/openssl.cnf"
-	sed -i 's|# activate = 1|activate = 1|g' "$pkg_prefix/ssl/openssl.cnf"
-
-	# Add [fips_sect] section after activate = 1
-	sed -i '/activate = 1/a\\n[fips_sect]\nactivate = 1' "$pkg_prefix/ssl/openssl.cnf"
+    cp $CACHE_PATH/LICENSE.txt "$pkg_prefix"
+    cp -v $(pkg_path_for core/openssl-stage1)/ssl/fipsmodule.cnf ${pkg_prefix}/ssl/
+    cp -v $(pkg_path_for core/openssl-stage1)/lib64/ossl-modules/fips.so ${pkg_prefix}/lib64/ossl-modules/
 
 	# Remove dependency on Perl at runtime
 	rm -rfv "$pkg_prefix/ssl/misc" "$pkg_prefix/bin/c_rehash"
