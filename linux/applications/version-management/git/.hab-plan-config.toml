@@ -1,8 +1,8 @@
 [rules]
 # Ignore sample scripts
 host-script-interpreter = {ignored_files = ["share/**/*.sample"]}
-license-not-found = {level = "off", source-shasum = "f8047f572f665bebeb637fd5f14678f31b3ca5d2ff9a18f20bd925bd48f75d3c"}
-missing-license = {level = "off", source-shasum = "f8047f572f665bebeb637fd5f14678f31b3ca5d2ff9a18f20bd925bd48f75d3c"}
+license-not-found = {level = "off", source-shasum = "429dc0f5fe5f14109930cdbbb588c5d6ef5b8528910f0d738040744bebdc6275"}
+missing-license = {level = "off", source-shasum = "429dc0f5fe5f14109930cdbbb588c5d6ef5b8528910f0d738040744bebdc6275"}
 # These packages are needed are runtime
 unused-dependency = {ignored_packages = ["core/{gettext,sed,cacerts,openssh,gcc-libs}"]}
 unused-runpath-entry = {level = "off"}
