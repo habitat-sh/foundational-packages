@@ -2,13 +2,13 @@ program="cmake"
 
 pkg_name="cmake"
 pkg_origin="core"
-pkg_version="4.0.3"
+pkg_version="4.2.3"
 pkg_maintainer='The Habitat Maintainers <humans@habitat.sh>'
 pkg_license=('BSD-3-Clause')
 pkg_description="CMake is an open-source, cross-platform family of tools designed to build, test and package software"
 pkg_upstream_url="https://cmake.org/"
 pkg_source="https://github.com/Kitware/CMake/releases/download/v${pkg_version}/cmake-${pkg_version}.tar.gz"
-pkg_shasum="8d3537b7b7732660ea247398f166be892fe6131d63cc291944b45b91279f3ffb"
+pkg_shasum="7efaccde8c5a6b2968bad6ce0fe60e19b6e10701a12fce948c2bf79bac8a11e9"
 pkg_dirname="${program}-${pkg_version}"
 pkg_deps=(
 	core/bzip2
@@ -82,7 +82,7 @@ do_install() {
 	popd || exit 1
 
 	# fix for interpreter
-	sed -e "s,/usr/bin/env,$(pkg_interpreter_for coreutils bin/env),g" -i ${pkg_prefix}/share/cmake-4.0/Modules/Compiler/XL-Fortran/cpp
+	sed -e "s,/usr/bin/env,$(pkg_interpreter_for coreutils bin/env),g" -i ${pkg_prefix}/share/cmake-4.2/Modules/Compiler/XL-Fortran/cpp
 
 	# copy license files in package
 	install -v -Dm644 ${CACHE_PATH}/LICENSE.rst ${pkg_prefix}
