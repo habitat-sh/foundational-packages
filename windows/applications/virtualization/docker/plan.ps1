@@ -1,12 +1,12 @@
 $pkg_name = "docker"
 $pkg_description = "The Docker Engine"
 $pkg_origin = "core"
-$pkg_version = "29.3.0"
+$pkg_version = "29.3.1"
 $pkg_maintainer = "The Habitat Maintainers <humans@habitat.sh>"
 $pkg_license = @("Apache-2.0")
 $pkg_source = "https://download.docker.com/win/static/stable/x86_64/$pkg_name-$pkg_version.zip"
 $pkg_upstream_url = "https://docs.docker.com/engine/installation/binaries/"
-$pkg_shasum = "1c2b072b5ce565e92cd3a9b3a645d78a26673737d8b7108cf6d1d83a7c4ba02a"
+$pkg_shasum = "9de0daaed958062d2005e2766c856a6671dd95e6202e1ac801c569e22dff7edf"
 $pkg_dirname = "docker"
 $pkg_bin_dirs = @("bin")
 
