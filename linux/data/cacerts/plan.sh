@@ -1,4 +1,5 @@
 pkg_name="cacerts"
+# ci-test
 pkg_origin="core"
 pkg_version="2025-05-20"
 pkg_description="\
