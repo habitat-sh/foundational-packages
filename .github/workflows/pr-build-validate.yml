@@ -1,0 +1,278 @@
+name: Verify Foundational PR Packages
+
+on:
+  workflow_dispatch:
+    inputs:
+      base_ref:
+        description: 'Base branch to diff against when run manually'
+        required: true
+        default: 'base-2025'
+  pull_request:
+    branches:
+      - base-2025
+    paths:
+      - 'linux/**'
+      - 'windows/**'
+      - '.github/workflows/pr-build-validate.yml'
+  push:
+    branches:
+      - base-2025
+    paths:
+      - 'linux/**'
+      - 'windows/**'
+
+env:
+  HAB_ORIGIN: ci
+  HAB_STUDIO_SECRET_HAB_REFRESH_CHANNEL: base-2025
+  HAB_STUDIO_SECRET_HAB_FALLBACK_CHANNEL: base-2025
+  HAB_STUDIO_SECRET_HAB_PREFER_LOCAL_CHEF_DEPS: true
+  HAB_LICENSE: accept-no-persist
+
+jobs:
+  detect-changes:
+    runs-on: ubuntu-latest
+    name: Detect changed package directories
+    outputs:
+      has-linux-x86_64: ${{ steps.detect.outputs.has-linux-x86_64 }}
+      linux-x86_64-packages: ${{ steps.detect.outputs.linux-x86_64-packages }}
+      has-windows: ${{ steps.detect.outputs.has-windows }}
+      windows-packages: ${{ steps.detect.outputs.windows-packages }}
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect changed packages
+        id: detect
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            git fetch origin "${{ github.base_ref }}"
+            diff_base="origin/${{ github.base_ref }}"
+            if ! changed_files=$(git diff --name-only "$diff_base...HEAD"); then
+              echo "Three-dot diff failed (no merge base). Falling back to two-dot diff."
+              changed_files=$(git diff --name-only "$diff_base..HEAD")
+            fi
+          elif [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            git fetch origin "${{ inputs.base_ref }}"
+            diff_base="origin/${{ inputs.base_ref }}"
+            if ! changed_files=$(git diff --name-only "$diff_base...HEAD"); then
+              echo "Three-dot diff failed (no merge base). Falling back to two-dot diff."
+              changed_files=$(git diff --name-only "$diff_base..HEAD")
+            fi
+          else
+            if [[ "${{ github.event.before }}" == "0000000000000000000000000000000000000000" ]]; then
+              changed_files=$(git ls-files)
+              diff_base="<all-files-in-repo>"
+            else
+              changed_files=$(git diff --name-only "${{ github.event.before }}" HEAD)
+              diff_base="${{ github.event.before }}"
+            fi
+          fi
+
+          echo "Event: ${{ github.event_name }}"
+          echo "Diff base: $diff_base"
+          if [[ -n "$changed_files" ]]; then
+            echo "Changed files:"
+            printf '%s\n' "$changed_files"
+          else
+            echo "Changed files: <none>"
+          fi
+
+          package_dirs=$(while IFS= read -r file; do
+            [[ -z "$file" ]] && continue
+            [[ "$file" == linux/* || "$file" == windows/* ]] || continue
+
+            dir="$file"
+            if [[ ! -d "$dir" ]]; then
+              dir=$(dirname "$dir")
+            fi
+
+            while [[ "$dir" != "." && "$dir" != "/" ]]; do
+              if [[ -f "$dir/plan.sh" || -f "$dir/plan.ps1" ]]; then
+                printf '%s\n' "$dir"
+                break
+              fi
+
+              # If a linux package keeps its plan in an x86_64-linux subfolder,
+              # route parent-folder changes to that subfolder.
+              if [[ "$dir" == linux/* && -f "$dir/x86_64-linux/plan.sh" ]]; then
+                printf '%s\n' "$dir/x86_64-linux"
+                break
+              fi
+
+              parent=$(dirname "$dir")
+              if [[ "$parent" == "$dir" ]]; then
+                break
+              fi
+              dir="$parent"
+            done
+          done <<< "$changed_files" | sort -u)
+
+          linux_x86_64_packages=$(printf '%s\n' "$package_dirs" | grep '^linux/' || true)
+          windows_packages=$(printf '%s\n' "$package_dirs" | grep '^windows/' || true)
+
+          to_json() {
+            local value="$1"
+            if [[ -z "$value" ]]; then
+              printf '[]'
+            else
+              printf '%s\n' "$value" | jq -R -s -c 'split("\n") | map(select(length > 0))'
+            fi
+          }
+
+          linux_x86_64_json=$(to_json "$linux_x86_64_packages")
+          windows_json=$(to_json "$windows_packages")
+
+          if [[ "$linux_x86_64_json" == "[]" ]]; then
+            echo "has-linux-x86_64=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "has-linux-x86_64=true" >> "$GITHUB_OUTPUT"
+          fi
+          echo "linux-x86_64-packages=$linux_x86_64_json" >> "$GITHUB_OUTPUT"
+
+          if [[ "$windows_json" == "[]" ]]; then
+            echo "has-windows=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "has-windows=true" >> "$GITHUB_OUTPUT"
+          fi
+          echo "windows-packages=$windows_json" >> "$GITHUB_OUTPUT"
+
+          echo "Linux x86_64 packages: $linux_x86_64_json"
+          echo "Windows packages: $windows_json"
+
+  build-linux-x86_64:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.has-linux-x86_64 == 'true'
+    runs-on: ubuntu-latest
+    name: Build changed Linux x86_64 packages
+    strategy:
+      matrix:
+        package: ${{ fromJson(needs.detect-changes.outputs.linux-x86_64-packages) }}
+      fail-fast: false
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Install Habitat
+        shell: bash
+        env:
+          HAB_AUTH_TOKEN: ${{ secrets.HAB_PUBLIC_BLDR_PAT }}
+        run: |
+          set -euo pipefail
+          [[ -n "${HAB_AUTH_TOKEN:-}" ]] || { echo "HAB_AUTH_TOKEN is empty in install step"; exit 1; }
+          curl https://raw.githubusercontent.com/habitat-sh/habitat/main/components/hab/install.sh | sudo -E bash
+          hab license accept
+          sudo hab license accept
+          hab --version
+
+      - name: Generate origin key
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ -n "${HAB_ORIGIN:-}" ]] || { echo "HAB_ORIGIN is empty"; exit 1; }
+          hab origin key generate "$HAB_ORIGIN"
+
+      - name: Build package
+        shell: bash
+        env:
+          HAB_AUTH_TOKEN: ${{ secrets.HAB_PUBLIC_BLDR_PAT }}
+        run: |
+          set -euo pipefail
+          cd "${{ matrix.package }}"
+          hab pkg build .
+
+      - name: Prepare artifact name
+        id: artifact
+        shell: bash
+        run: |
+          set -euo pipefail
+          safe_name=$(printf '%s' "${{ matrix.package }}" | tr '/' '-')
+          echo "name=linux-x86_64-$safe_name" >> "$GITHUB_OUTPUT"
+
+      - name: Upload build results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.artifact.outputs.name }}
+          path: |
+            ${{ matrix.package }}/results/
+            ${{ matrix.package }}/habitat/
+          if-no-files-found: ignore
+          retention-days: 30
+
+  build-windows:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.has-windows == 'true'
+    runs-on: windows-latest
+    name: Build changed Windows packages
+    strategy:
+      matrix:
+        package: ${{ fromJson(needs.detect-changes.outputs.windows-packages) }}
+      fail-fast: false
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Install Habitat
+        shell: pwsh
+        env:
+          HAB_AUTH_TOKEN: ${{ secrets.HAB_PUBLIC_BLDR_PAT }}
+        run: |
+          if ([string]::IsNullOrWhiteSpace($env:HAB_AUTH_TOKEN)) { throw "HAB_AUTH_TOKEN is empty in Windows install step" }
+          [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+          iex ((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/habitat-sh/habitat/main/components/hab/install.ps1'))
+          hab license accept
+          hab --version
+          # Register hab location for subsequent steps
+          $habDir = Split-Path (Get-Command hab).Source
+          "$habDir" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+          # Generate origin key
+          if ([string]::IsNullOrWhiteSpace($env:HAB_ORIGIN)) { throw "HAB_ORIGIN is empty" }
+          hab origin key generate $env:HAB_ORIGIN
+
+      - name: Build package
+        shell: pwsh
+        env:
+          HAB_AUTH_TOKEN: ${{ secrets.HAB_PUBLIC_BLDR_PAT }}
+        run: |
+          Set-StrictMode -Version Latest
+          Set-Location "${{ matrix.package }}"
+          hab pkg build .
+
+      - name: Prepare artifact name
+        id: artifact
+        shell: pwsh
+        run: |
+          $safeName = "${{ matrix.package }}" -replace '/', '-'
+          "name=windows-$safeName" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+
+      - name: Upload build results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.artifact.outputs.name }}
+          path: |
+            ${{ matrix.package }}/results/
+            ${{ matrix.package }}/habitat/
+          if-no-files-found: ignore
+          retention-days: 30
+
+  summary:
+    needs: [detect-changes, build-linux-x86_64, build-windows]
+    runs-on: ubuntu-latest
+    name: Build Summary
+    if: always()
+
+    steps:
+      - name: Build Summary
+        shell: bash
+        run: |
+          echo "Linux x86_64 packages: ${{ needs.detect-changes.outputs.linux-x86_64-packages }}"
+          echo "Windows packages: ${{ needs.detect-changes.outputs.windows-packages }}"
