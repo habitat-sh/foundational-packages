@@ -1,5 +1,4 @@
 $pkg_name="cacerts"
-# ci-test
 $pkg_origin="core"
 $pkg_version="_set_from_downloaded_cacerts_file_"
 $pkg_license=@('MPL-2.0')
