@@ -53,3 +53,4 @@ do_install() {
 
 	# source tarball does not have license files
 }
+# test
