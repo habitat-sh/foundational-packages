@@ -1,4 +1,4 @@
-name: Verify Enterprise PR Packages
+name: Verify Foundational PR Packages
 
 on:
   workflow_dispatch:
