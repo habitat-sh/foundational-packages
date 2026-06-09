@@ -162,10 +162,10 @@ jobs:
       - name: Install Habitat
         shell: bash
         env:
-          HAB_AUTH_TOKEN: ${{ secrets.HAB_AUTH_TOKEN_LIVE }}
+          HAB_AUTH_TOKEN: ${{ secrets.HAB_PUBLIC_BLDR_PAT }}
         run: |
           set -euo pipefail
-          [[ -n "${HAB_AUTH_TOKEN:-}" ]] || { echo "HAB_AUTH_TOKEN is empty in install step"; exit 1; }
+          [[ -n "${HAB_PUBLIC_BLDR_PAT:-}" ]] || { echo "HAB_PUBLIC_BLDR_PAT is empty in install step"; exit 1; }
           curl https://raw.githubusercontent.com/habitat-sh/habitat/main/components/hab/install.sh | sudo -E bash
           hab license accept
           sudo hab license accept
@@ -181,7 +181,7 @@ jobs:
       - name: Build package
         shell: bash
         env:
-          HAB_AUTH_TOKEN: ${{ secrets.HAB_AUTH_TOKEN_LIVE }}
+          HAB_AUTH_TOKEN: ${{ secrets.HAB_PUBLIC_BLDR_PAT }}
         run: |
           set -euo pipefail
           cd "${{ matrix.package }}"
@@ -223,9 +223,9 @@ jobs:
       - name: Install Habitat
         shell: pwsh
         env:
-          HAB_AUTH_TOKEN: ${{ secrets.HAB_AUTH_TOKEN_LIVE }}
+          HAB_AUTH_TOKEN: ${{ secrets.HAB_PUBLIC_BLDR_PAT }}
         run: |
-          if ([string]::IsNullOrWhiteSpace($env:HAB_AUTH_TOKEN)) { throw "HAB_AUTH_TOKEN is empty in Windows install step" }
+          if ([string]::IsNullOrWhiteSpace($env:HAB_PUBLIC_BLDR_PAT)) { throw "HAB_PUBLIC_BLDR_PAT is empty in Windows install step" }
           [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
           iex ((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/habitat-sh/habitat/main/components/hab/install.ps1'))
           hab license accept
@@ -240,7 +240,7 @@ jobs:
       - name: Build package
         shell: pwsh
         env:
-          HAB_AUTH_TOKEN: ${{ secrets.HAB_AUTH_TOKEN_LIVE }}
+          HAB_AUTH_TOKEN: ${{ secrets.HAB_PUBLIC_BLDR_PAT }}
         run: |
           Set-StrictMode -Version Latest
           Set-Location "${{ matrix.package }}"
