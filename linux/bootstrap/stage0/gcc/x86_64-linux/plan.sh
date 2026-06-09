@@ -1,5 +1,5 @@
 program="gcc"
-# ci-test
+
 pkg_name="gcc-stage0"
 pkg_origin="core"
 pkg_version="12.2.0"
