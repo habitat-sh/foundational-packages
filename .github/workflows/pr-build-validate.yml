@@ -11,15 +11,15 @@ on:
     branches:
       - base-2025
     paths:
-      - 'linux/**'
-      - 'windows/**'
+      - 'linux/**/plan.sh'
+      - 'windows/**/plan.ps1'
       - '.github/workflows/pr-build-validate.yml'
   push:
     branches:
       - base-2025
     paths:
-      - 'linux/**'
-      - 'windows/**'
+      - 'linux/**/plan.sh'
+      - 'windows/**/plan.ps1'
 
 env:
   HAB_ORIGIN: ci
