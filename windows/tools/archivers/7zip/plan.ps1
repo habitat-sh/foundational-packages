@@ -9,6 +9,7 @@ $pkg_source="https://www.7-zip.org/a/7z$($pkg_version.Replace('.',''))-x64.exe"
 $pkg_shasum="6fe18d5b3080e39678cabfa6cef12cfb25086377389b803a36a3c43236a8a82c"
 $pkg_filename="7z$($pkg_version.Replace('.',''))-x64.exe"
 $pkg_bin_dirs=@("bin")
+#  Testing CI only for Windows
 
 function Invoke-Unpack {
     Start-Process "$HAB_CACHE_SRC_PATH/$pkg_filename" -Wait -ArgumentList "/S /D=`"$(Resolve-Path $HAB_CACHE_SRC_PATH)/$pkg_dirname`""
