@@ -5,7 +5,7 @@ $pkg_license=@('MPL-2.0')
 $pkg_maintainer="The Habitat Maintainers <humans@habitat.sh>"
 $pkg_source="https://curl.se/ca/cacert.pem"
 $pkg_shasum="_set_from_downloaded_cacerts_sha256_file_"
-
+#  Testing CI for Windows
 function Invoke-Begin {
     Invoke-WebRequest -UseBasicParsing -Uri 'https://curl.se/ca/cacert.pem.sha256' -OutFile '.\cacert.pem.sha256'
     $script:pkg_shasum = ((Get-Content '.\cacert.pem.sha256') -split ' ')[0]
