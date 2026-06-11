@@ -11,6 +11,7 @@ pkg_source="http://curl.se/ca/cacert-${pkg_version}.pem"
 pkg_shasum="ab3ee3651977a4178a702b0b828a4ee7b2bbb9127235b0ab740e2e15974bf5db"
 pkg_deps=()
 pkg_build_deps=()
+# This is for CI testing
 
 pkg_version() {
 	local build_date
