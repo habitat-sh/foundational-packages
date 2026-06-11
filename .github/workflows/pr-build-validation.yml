@@ -1,12 +1,6 @@
 name: Verify Foundational PR Packages
 
 on:
-  workflow_dispatch:
-    inputs:
-      base_ref:
-        description: 'Base branch to diff against when run manually'
-        required: true
-        default: 'base-2025'
   pull_request:
     branches:
       - base-2025
@@ -48,13 +42,6 @@ jobs:
           if [[ "${{ github.event_name }}" == "pull_request" ]]; then
             git fetch origin "${{ github.base_ref }}"
             diff_base="origin/${{ github.base_ref }}"
-            if ! changed_files=$(git diff --name-only "$diff_base...HEAD"); then
-              echo "Three-dot diff failed (no merge base). Falling back to two-dot diff."
-              changed_files=$(git diff --name-only "$diff_base..HEAD")
-            fi
-          elif [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
-            git fetch origin "${{ inputs.base_ref }}"
-            diff_base="origin/${{ inputs.base_ref }}"
             if ! changed_files=$(git diff --name-only "$diff_base...HEAD"); then
               echo "Three-dot diff failed (no merge base). Falling back to two-dot diff."
               changed_files=$(git diff --name-only "$diff_base..HEAD")
