@@ -19,7 +19,7 @@ env:
 
 jobs:
   detect-changes:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     name: Detect changed package directories
     outputs:
       has-linux-x86_64: ${{ steps.detect.outputs.has-linux-x86_64 }}
@@ -130,7 +130,7 @@ jobs:
   build-linux-x86_64:
     needs: detect-changes
     if: needs.detect-changes.outputs.has-linux-x86_64 == 'true'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     name: Build changed Linux x86_64 packages
     strategy:
       matrix:
@@ -248,7 +248,7 @@ jobs:
 
   summary:
     needs: [detect-changes, build-linux-x86_64, build-windows]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     name: Build Summary
     if: always()
 
