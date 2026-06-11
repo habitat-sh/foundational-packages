@@ -41,7 +41,7 @@ jobs:
 
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v6.0.3
         with:
           fetch-depth: 0
 
@@ -158,7 +158,7 @@ jobs:
 
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v6.0.3
 
       - name: Install Habitat
         shell: bash
@@ -219,7 +219,7 @@ jobs:
 
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v6.0.3
 
       - name: Install Habitat
         shell: pwsh
