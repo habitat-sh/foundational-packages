@@ -21,6 +21,7 @@ jobs:
   detect-changes:
     runs-on: ubuntu-24.04
     name: Detect changed package directories
+    timeout-minutes: 60
     outputs:
       has-linux-x86_64: ${{ steps.detect.outputs.has-linux-x86_64 }}
       linux-x86_64-packages: ${{ steps.detect.outputs.linux-x86_64-packages }}
@@ -132,6 +133,7 @@ jobs:
     if: needs.detect-changes.outputs.has-linux-x86_64 == 'true'
     runs-on: ubuntu-24.04
     name: Build changed Linux x86_64 packages
+    timeout-minutes: 60
     strategy:
       matrix:
         package: ${{ fromJson(needs.detect-changes.outputs.linux-x86_64-packages) }}
@@ -193,6 +195,7 @@ jobs:
     if: needs.detect-changes.outputs.has-windows == 'true'
     runs-on: windows-latest
     name: Build changed Windows packages
+    timeout-minutes: 60
     strategy:
       matrix:
         package: ${{ fromJson(needs.detect-changes.outputs.windows-packages) }}
@@ -251,6 +254,7 @@ jobs:
     runs-on: ubuntu-24.04
     name: Build Summary
     if: always()
+    timeout-minutes: 60
 
     steps:
       - name: Build Summary
