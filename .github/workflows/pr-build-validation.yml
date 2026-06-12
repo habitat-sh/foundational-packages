@@ -18,6 +18,8 @@ env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
+  # Computes the list of changed Habitat package directories for each platform.
+  # Outputs JSON arrays consumed by the build matrix jobs below.
   detect-changes:
     runs-on: ubuntu-24.04
     name: Detect changed package directories
@@ -40,6 +42,12 @@ jobs:
         run: |
           set -euo pipefail
 
+          # Determine the diff base depending on the event type.
+          # For PRs: diff against the target branch using three-dot diff (excludes
+          # commits already in the base branch). Falls back to two-dot diff if no
+          # merge base exists (e.g. shallow clone edge cases).
+          # For push events: diff against the previous commit SHA. On first push
+          # (before SHA is all-zeros), list all tracked files instead.
           if [[ "${{ github.event_name }}" == "pull_request" ]]; then
             git fetch origin "${{ github.base_ref }}"
             diff_base="origin/${{ github.base_ref }}"
@@ -66,6 +74,12 @@ jobs:
             echo "Changed files: <none>"
           fi
 
+          # Walk each changed file upward to find its package root directory.
+          # A package root is the nearest ancestor directory containing a plan file
+          # (plan.sh for Linux, plan.ps1 for Windows).
+          # Special case: some Linux packages store their plan under an
+          # x86_64-linux/ subfolder. If found, emit that subfolder path instead
+          # of the parent so the correct platform-specific plan is built.
           package_dirs=$(while IFS= read -r file; do
             [[ -z "$file" ]] && continue
             [[ "$file" == linux/* || "$file" == windows/* ]] || continue
@@ -99,6 +113,9 @@ jobs:
           linux_x86_64_packages=$(printf '%s\n' "$package_dirs" | grep '^linux/' || true)
           windows_packages=$(printf '%s\n' "$package_dirs" | grep '^windows/' || true)
 
+          # Converts a newline-separated list of package paths to a JSON array.
+          # Returns an empty JSON array ([]) if the input is empty, which is used
+          # by downstream jobs to decide whether to run via the has-* output flags.
           to_json() {
             local value="$1"
             if [[ -z "$value" ]]; then
@@ -128,6 +145,10 @@ jobs:
           echo "Linux x86_64 packages: $linux_x86_64_json"
           echo "Windows packages: $windows_json"
 
+  # Job: build-linux-x86_64
+  # Builds each changed Linux x86_64 Habitat package using a matrix strategy
+  # so packages build in parallel. Skipped if no Linux packages changed.
+  # Uses HAB_PUBLIC_BLDR_PAT secret for authenticated access to the depot.
   build-linux-x86_64:
     needs: detect-changes
     if: needs.detect-changes.outputs.has-linux-x86_64 == 'true'
@@ -190,6 +211,10 @@ jobs:
           if-no-files-found: ignore
           retention-days: 30
 
+  # Job: build-windows
+  # Builds each changed Windows Habitat package using a matrix strategy.
+  # Skipped if no Windows packages changed.
+  # Uses HAB_PUBLIC_BLDR_PAT secret for authenticated access to the depot.
   build-windows:
     needs: detect-changes
     if: needs.detect-changes.outputs.has-windows == 'true'
@@ -249,6 +274,9 @@ jobs:
           if-no-files-found: ignore
           retention-days: 30
 
+  # Job: summary
+  # Always runs after all build jobs (pass, fail, or skip) to print
+  # a consolidated list of which packages were detected and built.
   summary:
     needs: [detect-changes, build-linux-x86_64, build-windows]
     runs-on: ubuntu-24.04
