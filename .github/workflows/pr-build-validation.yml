@@ -6,7 +6,9 @@ on:
       - base-2025
     paths:
       - 'linux/**/plan.sh'
+      - 'linux/**/.hab-plan-config.toml'
       - 'windows/**/plan.ps1'
+      - 'windows/**/.hab-plan-config.toml'
       - '.github/workflows/pr-build-validation.yml'
 
 env:
@@ -164,6 +166,41 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v6.0.3
 
+      - name: Validate shasum
+        shell: bash
+        run: |
+          set -euo pipefail
+          pkg_dir="${{ matrix.package }}"
+          plan_file="$pkg_dir/plan.sh"
+          config_file="$pkg_dir/.hab-plan-config.toml"
+
+          if [[ ! -f "$config_file" ]]; then
+            echo "No .hab-plan-config.toml in $pkg_dir — skipping shasum validation."
+            exit 0
+          fi
+
+          pkg_shasum=$(grep -E '^pkg_shasum=' "$plan_file" | sed 's/^pkg_shasum=//;s/"//g' | tr -d "'" | tr -d '[:space:]')
+          if [[ -z "$pkg_shasum" ]]; then
+            echo "pkg_shasum not found in $plan_file — skipping shasum validation."
+            exit 0
+          fi
+
+          # Extract all unique source-shasum values from config (may appear on multiple rule lines)
+          failed=false
+          while IFS= read -r source_shasum; do
+            if [[ "$pkg_shasum" != "$source_shasum" ]]; then
+              echo "ERROR: shasum mismatch!"
+              echo "  pkg_shasum in plan.sh:                   $pkg_shasum"
+              echo "  source-shasum in .hab-plan-config.toml:  $source_shasum"
+              failed=true
+            fi
+          done < <(grep -oP 'source-shasum\s*=\s*"\K[^"]+' "$config_file" | sort -u)
+
+          if [[ "$failed" == "true" ]]; then
+            exit 1
+          fi
+          echo "Shasum validation passed: $pkg_shasum"
+
       - name: Install Habitat
         shell: bash
         env:
@@ -229,6 +266,47 @@ jobs:
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v6.0.3
+
+      - name: Validate shasum
+        shell: pwsh
+        run: |
+          Set-StrictMode -Version Latest
+          $pkgDir = "${{ matrix.package }}"
+          $planFile = Join-Path $pkgDir "plan.ps1"
+          $configFile = Join-Path $pkgDir ".hab-plan-config.toml"
+
+          if (-not (Test-Path $configFile)) {
+            Write-Host "No .hab-plan-config.toml in $pkgDir — skipping shasum validation."
+            exit 0
+          }
+
+          $pkgShasumMatch = Select-String -Path $planFile -Pattern '^\$pkg_shasum\s*=\s*"([^"]+)"'
+          if (-not $pkgShasumMatch) {
+            Write-Host "pkg_shasum not found in $planFile — skipping shasum validation."
+            exit 0
+          }
+          $pkgShasum = $pkgShasumMatch.Matches[0].Groups[1].Value
+
+          # Extract all unique source-shasum values from config (may appear on multiple rule lines)
+          $sourceShasums = (Select-String -Path $configFile -Pattern 'source-shasum\s*=\s*"([^"]+)"' -AllMatches).Matches |
+            ForEach-Object { $_.Groups[1].Value } | Sort-Object -Unique
+
+          if (-not $sourceShasums) {
+            Write-Host "source-shasum not found in $configFile — skipping shasum validation."
+            exit 0
+          }
+
+          $failed = $false
+          foreach ($sourceShasum in $sourceShasums) {
+            if ($pkgShasum -ne $sourceShasum) {
+              Write-Host "ERROR: shasum mismatch!"
+              Write-Host "  pkg_shasum in plan.ps1:                  $pkgShasum"
+              Write-Host "  source-shasum in .hab-plan-config.toml:  $sourceShasum"
+              $failed = $true
+            }
+          }
+          if ($failed) { exit 1 }
+          Write-Host "Shasum validation passed: $pkgShasum"
 
       - name: Install Habitat
         shell: pwsh
