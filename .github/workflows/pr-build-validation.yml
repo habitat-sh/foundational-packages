@@ -44,30 +44,16 @@ jobs:
         run: |
           set -euo pipefail
 
-          # Determine the diff base depending on the event type.
-          # For PRs: diff against the target branch using three-dot diff (excludes
+          # Diff against the PR target branch using three-dot diff (excludes
           # commits already in the base branch). Falls back to two-dot diff if no
           # merge base exists (e.g. shallow clone edge cases).
-          # For push events: diff against the previous commit SHA. On first push
-          # (before SHA is all-zeros), list all tracked files instead.
-          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
-            git fetch origin "${{ github.base_ref }}"
-            diff_base="origin/${{ github.base_ref }}"
-            if ! changed_files=$(git diff --name-only "$diff_base...HEAD"); then
-              echo "Three-dot diff failed (no merge base). Falling back to two-dot diff."
-              changed_files=$(git diff --name-only "$diff_base..HEAD")
-            fi
-          else
-            if [[ "${{ github.event.before }}" == "0000000000000000000000000000000000000000" ]]; then
-              changed_files=$(git ls-files)
-              diff_base="<all-files-in-repo>"
-            else
-              changed_files=$(git diff --name-only "${{ github.event.before }}" HEAD)
-              diff_base="${{ github.event.before }}"
-            fi
+          git fetch origin "${{ github.base_ref }}"
+          diff_base="origin/${{ github.base_ref }}"
+          if ! changed_files=$(git diff --name-only "$diff_base...HEAD"); then
+            echo "Three-dot diff failed (no merge base). Falling back to two-dot diff."
+            changed_files=$(git diff --name-only "$diff_base..HEAD")
           fi
 
-          echo "Event: ${{ github.event_name }}"
           echo "Diff base: $diff_base"
           if [[ -n "$changed_files" ]]; then
             echo "Changed files:"
