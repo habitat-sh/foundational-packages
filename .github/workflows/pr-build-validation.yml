@@ -1,0 +1,356 @@
+name: Verify Foundational PR Packages
+
+on:
+  pull_request:
+    branches:
+      - base-2025
+    paths:
+      - 'linux/**/plan.sh'
+      - 'linux/**/.hab-plan-config.toml'
+      - 'windows/**/plan.ps1'
+      - 'windows/**/.hab-plan-config.toml'
+      - '.github/workflows/pr-build-validation.yml'
+
+env:
+  HAB_ORIGIN: ci
+  HAB_STUDIO_SECRET_HAB_REFRESH_CHANNEL: base-2025
+  HAB_STUDIO_SECRET_HAB_FALLBACK_CHANNEL: base-2025
+  HAB_STUDIO_SECRET_HAB_PREFER_LOCAL_CHEF_DEPS: true
+  HAB_LICENSE: accept-no-persist
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  # Computes the list of changed Habitat package directories for each platform.
+  # Outputs JSON arrays consumed by the build matrix jobs below.
+  detect-changes:
+    runs-on: ubuntu-24.04
+    name: Detect changed package directories
+    timeout-minutes: 60
+    outputs:
+      has-linux-x86_64: ${{ steps.detect.outputs.has-linux-x86_64 }}
+      linux-x86_64-packages: ${{ steps.detect.outputs.linux-x86_64-packages }}
+      has-windows: ${{ steps.detect.outputs.has-windows }}
+      windows-packages: ${{ steps.detect.outputs.windows-packages }}
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v6.0.3
+        with:
+          fetch-depth: 0
+
+      - name: Detect changed packages
+        id: detect
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          # Diff against the PR target branch using three-dot diff (excludes
+          # commits already in the base branch). Falls back to two-dot diff if no
+          # merge base exists (e.g. shallow clone edge cases).
+          git fetch origin "${{ github.base_ref }}"
+          diff_base="origin/${{ github.base_ref }}"
+          if ! changed_files=$(git diff --name-only "$diff_base...HEAD"); then
+            echo "Three-dot diff failed (no merge base). Falling back to two-dot diff."
+            changed_files=$(git diff --name-only "$diff_base..HEAD")
+          fi
+
+          echo "Diff base: $diff_base"
+          if [[ -n "$changed_files" ]]; then
+            echo "Changed files:"
+            printf '%s\n' "$changed_files"
+          else
+            echo "Changed files: <none>"
+          fi
+
+          # Walk each changed file upward to find its package root directory.
+          # A package root is the nearest ancestor directory containing a plan file
+          # (plan.sh for Linux, plan.ps1 for Windows).
+          # Special case: some Linux packages store their plan under an
+          # x86_64-linux/ subfolder. If found, emit that subfolder path instead
+          # of the parent so the correct platform-specific plan is built.
+          package_dirs=$(while IFS= read -r file; do
+            [[ -z "$file" ]] && continue
+            [[ "$file" == linux/* || "$file" == windows/* ]] || continue
+
+            dir="$file"
+            if [[ ! -d "$dir" ]]; then
+              dir=$(dirname "$dir")
+            fi
+
+            while [[ "$dir" != "." && "$dir" != "/" ]]; do
+              if [[ -f "$dir/plan.sh" || -f "$dir/plan.ps1" ]]; then
+                printf '%s\n' "$dir"
+                break
+              fi
+
+              # If a linux package keeps its plan in an x86_64-linux subfolder,
+              # route parent-folder changes to that subfolder.
+              if [[ "$dir" == linux/* && -f "$dir/x86_64-linux/plan.sh" ]]; then
+                printf '%s\n' "$dir/x86_64-linux"
+                break
+              fi
+
+              parent=$(dirname "$dir")
+              if [[ "$parent" == "$dir" ]]; then
+                break
+              fi
+              dir="$parent"
+            done
+          done <<< "$changed_files" | sort -u)
+
+          linux_x86_64_packages=$(printf '%s\n' "$package_dirs" | grep '^linux/' || true)
+          windows_packages=$(printf '%s\n' "$package_dirs" | grep '^windows/' || true)
+
+          # Converts a newline-separated list of package paths to a JSON array.
+          # Returns an empty JSON array ([]) if the input is empty, which is used
+          # by downstream jobs to decide whether to run via the has-* output flags.
+          to_json() {
+            local value="$1"
+            if [[ -z "$value" ]]; then
+              printf '[]'
+            else
+              printf '%s\n' "$value" | jq -R -s -c 'split("\n") | map(select(length > 0))'
+            fi
+          }
+
+          linux_x86_64_json=$(to_json "$linux_x86_64_packages")
+          windows_json=$(to_json "$windows_packages")
+
+          if [[ "$linux_x86_64_json" == "[]" ]]; then
+            echo "has-linux-x86_64=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "has-linux-x86_64=true" >> "$GITHUB_OUTPUT"
+          fi
+          echo "linux-x86_64-packages=$linux_x86_64_json" >> "$GITHUB_OUTPUT"
+
+          if [[ "$windows_json" == "[]" ]]; then
+            echo "has-windows=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "has-windows=true" >> "$GITHUB_OUTPUT"
+          fi
+          echo "windows-packages=$windows_json" >> "$GITHUB_OUTPUT"
+
+          echo "Linux x86_64 packages: $linux_x86_64_json"
+          echo "Windows packages: $windows_json"
+
+  # Job: build-linux-x86_64
+  # Builds each changed Linux x86_64 Habitat package using a matrix strategy
+  # so packages build in parallel. Skipped if no Linux packages changed.
+  # Uses HAB_PUBLIC_BLDR_PAT secret for authenticated access to the depot.
+  build-linux-x86_64:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.has-linux-x86_64 == 'true'
+    runs-on: ubuntu-24.04
+    name: Build changed Linux x86_64 packages
+    timeout-minutes: 60
+    strategy:
+      matrix:
+        package: ${{ fromJson(needs.detect-changes.outputs.linux-x86_64-packages) }}
+      fail-fast: false
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v6.0.3
+
+      - name: Validate shasum
+        shell: bash
+        run: |
+          set -euo pipefail
+          pkg_dir="${{ matrix.package }}"
+          plan_file="$pkg_dir/plan.sh"
+          config_file="$pkg_dir/.hab-plan-config.toml"
+
+          if [[ ! -f "$config_file" ]]; then
+            echo "No .hab-plan-config.toml in $pkg_dir — skipping shasum validation."
+            exit 0
+          fi
+
+          pkg_shasum=$(grep -E '^pkg_shasum=' "$plan_file" | sed 's/^pkg_shasum=//;s/"//g' | tr -d "'" | tr -d '[:space:]')
+          if [[ -z "$pkg_shasum" ]]; then
+            echo "pkg_shasum not found in $plan_file — skipping shasum validation."
+            exit 0
+          fi
+
+          # Extract all unique source-shasum values from config (may appear on multiple rule lines)
+          failed=false
+          while IFS= read -r source_shasum; do
+            if [[ "$pkg_shasum" != "$source_shasum" ]]; then
+              echo "ERROR: shasum mismatch!"
+              echo "  pkg_shasum in plan.sh:                   $pkg_shasum"
+              echo "  source-shasum in .hab-plan-config.toml:  $source_shasum"
+              failed=true
+            fi
+          done < <(grep -oP 'source-shasum\s*=\s*"\K[^"]+' "$config_file" | sort -u)
+
+          if [[ "$failed" == "true" ]]; then
+            exit 1
+          fi
+          echo "Shasum validation passed: $pkg_shasum"
+
+      - name: Install Habitat
+        shell: bash
+        env:
+          HAB_AUTH_TOKEN: ${{ secrets.HAB_PUBLIC_BLDR_PAT }}
+        run: |
+          set -euo pipefail
+          [[ -n "${HAB_AUTH_TOKEN:-}" ]] || { echo "HAB_AUTH_TOKEN is empty in install step"; exit 1; }
+          curl https://raw.githubusercontent.com/habitat-sh/habitat/main/components/hab/install.sh | sudo -E bash
+          hab license accept
+          sudo hab license accept
+          hab --version
+
+      - name: Generate origin key
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ -n "${HAB_ORIGIN:-}" ]] || { echo "HAB_ORIGIN is empty"; exit 1; }
+          hab origin key generate "$HAB_ORIGIN"
+
+      - name: Build package
+        shell: bash
+        env:
+          HAB_AUTH_TOKEN: ${{ secrets.HAB_PUBLIC_BLDR_PAT }}
+        run: |
+          set -euo pipefail
+          cd "${{ matrix.package }}"
+          hab pkg build .
+
+      - name: Prepare artifact name
+        id: artifact
+        shell: bash
+        run: |
+          set -euo pipefail
+          safe_name=$(printf '%s' "${{ matrix.package }}" | tr '/' '-')
+          echo "name=linux-x86_64-$safe_name" >> "$GITHUB_OUTPUT"
+
+      - name: Upload build results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.artifact.outputs.name }}
+          path: |
+            ${{ matrix.package }}/results/
+            ${{ matrix.package }}/habitat/
+          if-no-files-found: ignore
+          retention-days: 30
+
+  # Job: build-windows
+  # Builds each changed Windows Habitat package using a matrix strategy.
+  # Skipped if no Windows packages changed.
+  # Uses HAB_PUBLIC_BLDR_PAT secret for authenticated access to the depot.
+  build-windows:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.has-windows == 'true'
+    runs-on: windows-latest
+    name: Build changed Windows packages
+    timeout-minutes: 60
+    strategy:
+      matrix:
+        package: ${{ fromJson(needs.detect-changes.outputs.windows-packages) }}
+      fail-fast: false
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v6.0.3
+
+      - name: Validate shasum
+        shell: pwsh
+        run: |
+          Set-StrictMode -Version Latest
+          $pkgDir = "${{ matrix.package }}"
+          $planFile = Join-Path $pkgDir "plan.ps1"
+          $configFile = Join-Path $pkgDir ".hab-plan-config.toml"
+
+          if (-not (Test-Path $configFile)) {
+            Write-Host "No .hab-plan-config.toml in $pkgDir — skipping shasum validation."
+            exit 0
+          }
+
+          $pkgShasumMatch = Select-String -Path $planFile -Pattern '^\$pkg_shasum\s*=\s*"([^"]+)"'
+          if (-not $pkgShasumMatch) {
+            Write-Host "pkg_shasum not found in $planFile — skipping shasum validation."
+            exit 0
+          }
+          $pkgShasum = $pkgShasumMatch.Matches[0].Groups[1].Value
+
+          # Extract all unique source-shasum values from config (may appear on multiple rule lines)
+          $sourceShasums = (Select-String -Path $configFile -Pattern 'source-shasum\s*=\s*"([^"]+)"' -AllMatches).Matches |
+            ForEach-Object { $_.Groups[1].Value } | Sort-Object -Unique
+
+          if (-not $sourceShasums) {
+            Write-Host "source-shasum not found in $configFile — skipping shasum validation."
+            exit 0
+          }
+
+          $failed = $false
+          foreach ($sourceShasum in $sourceShasums) {
+            if ($pkgShasum -ne $sourceShasum) {
+              Write-Host "ERROR: shasum mismatch!"
+              Write-Host "  pkg_shasum in plan.ps1:                  $pkgShasum"
+              Write-Host "  source-shasum in .hab-plan-config.toml:  $sourceShasum"
+              $failed = $true
+            }
+          }
+          if ($failed) { exit 1 }
+          Write-Host "Shasum validation passed: $pkgShasum"
+
+      - name: Install Habitat
+        shell: pwsh
+        env:
+          HAB_AUTH_TOKEN: ${{ secrets.HAB_PUBLIC_BLDR_PAT }}
+        run: |
+          if ([string]::IsNullOrWhiteSpace($env:HAB_AUTH_TOKEN)) { throw "HAB_AUTH_TOKEN is empty in Windows install step" }
+          [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+          iex ((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/habitat-sh/habitat/main/components/hab/install.ps1'))
+          hab license accept
+          hab --version
+          # Register hab location for subsequent steps
+          $habDir = Split-Path (Get-Command hab).Source
+          "$habDir" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+          # Generate origin key
+          if ([string]::IsNullOrWhiteSpace($env:HAB_ORIGIN)) { throw "HAB_ORIGIN is empty" }
+          hab origin key generate $env:HAB_ORIGIN
+
+      - name: Build package
+        shell: pwsh
+        env:
+          HAB_AUTH_TOKEN: ${{ secrets.HAB_PUBLIC_BLDR_PAT }}
+        run: |
+          Set-StrictMode -Version Latest
+          Set-Location "${{ matrix.package }}"
+          hab pkg build .
+
+      - name: Prepare artifact name
+        id: artifact
+        shell: pwsh
+        run: |
+          $safeName = "${{ matrix.package }}" -replace '/', '-'
+          "name=windows-$safeName" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+
+      - name: Upload build results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.artifact.outputs.name }}
+          path: |
+            ${{ matrix.package }}/results/
+            ${{ matrix.package }}/habitat/
+          if-no-files-found: ignore
+          retention-days: 30
+
+  # Job: summary
+  # Always runs after all build jobs (pass, fail, or skip) to print
+  # a consolidated list of which packages were detected and built.
+  summary:
+    needs: [detect-changes, build-linux-x86_64, build-windows]
+    runs-on: ubuntu-24.04
+    name: Build Summary
+    if: always()
+    timeout-minutes: 60
+
+    steps:
+      - name: Build Summary
+        shell: bash
+        run: |
+          echo "Linux x86_64 packages: ${{ needs.detect-changes.outputs.linux-x86_64-packages }}"
+          echo "Windows packages: ${{ needs.detect-changes.outputs.windows-packages }}"
