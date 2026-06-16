@@ -1,5 +1,5 @@
 pkg_name="git"
-pkg_version="2.53.0"
+pkg_version="2.54.0"
 pkg_origin="core"
 pkg_description="Git is a free and open source distributed version control
   system designed to handle everything from small to very large projects with
