@@ -22,6 +22,7 @@ pkg_build_deps=(
 	core/gcc
 	core/shadow
 )
+
 pkg_bin_dirs=(bin)
 
 do_prepare() {
