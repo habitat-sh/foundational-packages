@@ -6,6 +6,7 @@ pkg_description="\
 mg is Micro GNU/emacs, this is a portable version of the mg maintained by the \
 OpenBSD team.\
 "
+
 pkg_upstream_url="https://github.com/hboetes/mg"
 pkg_license=('LicenseRef-Public-Domain')
 pkg_source="https://github.com/hboetes/$pkg_name/archive/$pkg_version.tar.gz"

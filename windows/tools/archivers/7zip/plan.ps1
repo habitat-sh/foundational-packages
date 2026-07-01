@@ -14,6 +14,7 @@ function Invoke-Unpack {
     Start-Process "$HAB_CACHE_SRC_PATH/$pkg_filename" -Wait -ArgumentList "/S /D=`"$(Resolve-Path $HAB_CACHE_SRC_PATH)/$pkg_dirname`""
 }
 
+
 function Invoke-Install {
     Copy-Item * "$pkg_prefix/bin" -Recurse -Force
 }
