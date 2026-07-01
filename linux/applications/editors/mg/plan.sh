@@ -23,6 +23,7 @@ pkg_build_deps=(
 	core/gcc
 	core/pkg-config
 	core/libmd
+	core/patch
 )
 
 pkg_bin_dirs=(bin)
