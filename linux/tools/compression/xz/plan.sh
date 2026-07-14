@@ -2,7 +2,7 @@ program="xz"
 
 pkg_name="xz"
 pkg_origin="core"
-pkg_version="5.8.1"
+pkg_version="5.8.3"
 pkg_maintainer="The Habitat Maintainers <humans@habitat.sh>"
 pkg_description="\
 XZ Utils is free general-purpose data compression software with a high \
@@ -12,7 +12,7 @@ work on some not-so-POSIX systems. XZ Utils are the successor to LZMA Utils.\
 pkg_upstream_url="http://tukaani.org/xz/"
 pkg_license=('GPL-2.0-or-later' 'LGPL-2.0-or-later')
 pkg_source="http://tukaani.org/${program}/${program}-${pkg_version}.tar.gz"
-pkg_shasum="507825b599356c10dca1cd720c9d0d0c9d5400b9de300af00e4d1ea150795543"
+pkg_shasum="3d3a1b973af218114f4f889bbaa2f4c037deaae0c8e815eec381c3d546b974a0"
 pkg_dirname="${program}-${pkg_version}"
 
 pkg_deps=(
