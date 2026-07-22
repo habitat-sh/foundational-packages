@@ -1,5 +1,5 @@
 pkg_name="git"
-pkg_version="2.54.0"
+pkg_version="2.55.0"
 pkg_origin="core"
 pkg_description="Git is a free and open source distributed version control
   system designed to handle everything from small to very large projects with
@@ -9,7 +9,7 @@ pkg_license=('GPL-2.0-only' 'LGPL-2.1-only')
 pkg_maintainer="The Habitat Maintainers <humans@habitat.sh>"
 pkg_source="https://www.kernel.org/pub/software/scm/git/${pkg_name}-${pkg_version}.tar.gz"
 pkg_filename="${pkg_name}-${pkg_version}.tar.gz"
-pkg_shasum="45e8107643a44e3ce46f5665beb35af3932fb0d70017687905ab5d4e3aafa8eb"
+pkg_shasum="0842dc384a23ac33ba3e570c4f3a8ded85963ee4713b1cd21153c3db41813d1e"
 pkg_deps=(
 	core/bash
 	core/cacerts
@@ -24,6 +24,7 @@ pkg_deps=(
 	core/perl
 	core/sed
 	core/zlib
+	core/rust
 )
 pkg_build_deps=(
 	core/coreutils
