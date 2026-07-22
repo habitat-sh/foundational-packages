@@ -24,7 +24,6 @@ pkg_deps=(
 	core/perl
 	core/sed
 	core/zlib
-	core/rust
 )
 pkg_build_deps=(
 	core/coreutils
@@ -33,6 +32,7 @@ pkg_build_deps=(
 	core/make
 	core/python
 	core/texinfo
+	core/rust
 )
 
 pkg_bin_dirs=(bin)
