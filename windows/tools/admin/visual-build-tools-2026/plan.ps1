@@ -36,24 +36,34 @@ function Invoke-SetupEnvironment {
     Set-RuntimeEnv "DisableRegistryUse" "true"
 	# Setting this Windows Driver Kit variable is necessary to enable
     # cmake to use this portable build tools package and not query
-    # the windows registry or the vieual studio installer components
+    # the windows registry or the visual studio installer components
     Set-RuntimeEnv "EnterpriseWDK" "true"
     Set-RuntimeEnv "UseEnv" "true"
     Set-RuntimeEnv "VCToolsVersion" "14.51.36231"
     Set-RuntimeEnv "VisualStudioVersion" "18.0"
     Set-RuntimeEnv -IsPath "VSINSTALLDIR" "$pkg_prefix\Contents"
     Set-RuntimeEnv -IsPath "VCToolsInstallDir_180" "$pkg_prefix\Contents\VC\Redist\MSVC\14.51.36231"
-    # This prevents msbuild.exe from runniun (for 15 minutes) and locking files after a build completes
+    # This prevents msbuild.exe from running (for 15 minutes) and locking files after a build completes
     Set-RuntimeEnv "MSBUILDDISABLENODEREUSE" "1"
 }
 
 <#
 NOTE: The VS bootstrapper enforces a hard limit: the layout path must be < 80 characters.
-The Habitat studio path is ~130 chars, so we cannot use $HAB_CACHE_SRC_PATH here. Instead, we will use the top level path of the current working directory to create a layout path that is < 80 characters.
+The Habitat studio path is ~130 chars, so we cannot use $HAB_CACHE_SRC_PATH here.
+Instead, we will use the top level path of the current working directory to create a layout path that is < 80 characters.
 #>
 
 $topLevelLayoutPath = $($pwd.Path -match '^([A-Za-z]:\\([^\\\n]+)?)' | Out-Null; $Matches[1])
 $layoutPath = "$topLevelLayoutPath\hab\vst_layout"
+
+# Ensuring we don't leave any previous layout behind, which may cause issues with the current build.
+if (Test-Path $layoutPath) {
+    Remove-Item -Path $layoutPath -Recurse -Force
+    New-Item -ItemType Directory -Path $layoutPath | Out-Null
+}
+else {
+    New-Item -ItemType Directory -Path $layoutPath | Out-Null
+}
 
 function Invoke-Unpack {
     # This makes me very sad, but is a necessary evil to get the layout working in docker.
