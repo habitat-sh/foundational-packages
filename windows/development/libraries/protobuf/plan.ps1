@@ -25,7 +25,7 @@ function Invoke-Build {
 	git clone -b lts_2023_08_02 https://github.com/abseil/abseil-cpp.git $HAB_CACHE_SRC_PATH\$pkg_name-$pkg_version\$pkg_name-$pkg_version\third_party/abseil-cpp
     Set-Location "$pkg_name-$pkg_version\cmake"
 
-    $zlib_libdir = "$(Get-HabPackagePath zlib)\lib\zlibwapi.lib"
+    $zlib_libdir = "$(Get-HabPackagePath zlib)\lib\z.lib"
     $zlib_includedir = "$(Get-HabPackagePath zlib)\include"
 
     mkdir build

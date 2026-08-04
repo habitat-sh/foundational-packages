@@ -19,16 +19,15 @@ function Invoke-Build {
 	# zlib 1.3.2 requires cmake for building.
 	mkdir cmake-build
     Set-Location cmake-build
-    cmake -G "Visual Studio 17 2022" -A "x64" -T "v143" -DCMAKE_SYSTEM_VERSION="10.0" -DCMAKE_INSTALL_PREFIX="${prefix_path}\zlib" -DENABLE_CURVE="false" ..
-
+    cmake -G "Visual Studio 17 2022" -A "x64" -T "v143" -DCMAKE_SYSTEM_VERSION="10.0" -DCMAKE_INSTALL_PREFIX="${prefix_path}\zlib" ..
     msbuild /p:Configuration=Release /p:Platform=x64 "zlib.sln"
     if($LASTEXITCODE -ne 0) { Write-Error "msbuild failed!" }
 }
 
 function Invoke-Install {
     
-	Copy-Item "$HAB_CACHE_SRC_PATH\$pkg_name-$pkg_version\$pkg_name-$pkg_version\cmake-build\Release\z.dll" "$pkg_prefix\bin\zlibwapi.dll" -Force
-    Copy-Item "$HAB_CACHE_SRC_PATH\$pkg_name-$pkg_version\$pkg_name-$pkg_version\cmake-build\Release\z.lib" "$pkg_prefix\lib\zlibwapi.lib" -Force
+	Copy-Item "$HAB_CACHE_SRC_PATH\$pkg_name-$pkg_version\$pkg_name-$pkg_version\cmake-build\Release\z.dll" "$pkg_prefix\bin\z.dll" -Force
+    Copy-Item "$HAB_CACHE_SRC_PATH\$pkg_name-$pkg_version\$pkg_name-$pkg_version\cmake-build\Release\z.lib" "$pkg_prefix\lib\z.lib" -Force
     Copy-Item "$HAB_CACHE_SRC_PATH\$pkg_name-$pkg_version\$pkg_name-$pkg_version\zlib.h" "$pkg_prefix\include\" -Force
     Copy-Item "$HAB_CACHE_SRC_PATH\$pkg_name-$pkg_version\$pkg_name-$pkg_version\zconf.h" "$pkg_prefix\include\" -Force
 
