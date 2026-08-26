@@ -1,5 +1,5 @@
 [rules]
-missing-license = {level = "off", source-shasum = "1c955c040dd087e4751d15588ddec288b4208bea16f8ec5046c164877e55fff7"}
+missing-license = {level = "off", source-shasum = "aa30409afa67bd1ada244cefd82c7980e6a65bc113bb978e934b2413c75e3900"}
 # Some rust files in the docs start with #![feature(...)] which is misinterpreted as a script
 script-interpreter-not-found = {ignored_files = ["*.rs"]}
 library-dependency-not-found = {ignored_files = ["lib/*"]}
