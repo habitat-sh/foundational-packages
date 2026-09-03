@@ -7,7 +7,7 @@ on:
 
 jobs:
   trigger-enterprise-build:
-    uses: habitat-sh/enterprise-packages/.github/workflows/build-packages.yml@base-2025
+    uses: habitat-sh/enterprise-packages/.github/workflows/build-packages.yml
     with:
       foundational_ref: ${{ github.sha }}
     secrets: inherit
