@@ -1,10 +1,5 @@
 name: Trigger Enterprise Build
 
-# Fires on every push to base-2025 (the result of a merged PR). GitHub has no
-# dedicated "PR merged" event, so a push to the default branch is the standard
-# way to detect it. Direct pushes should be prevented by branch protection
-# rules (requiring PRs), but this workflow is harmless if one occurs — it
-# triggers an incremental build that finds nothing new if no plan files changed.
 on:
   push:
     branches:
