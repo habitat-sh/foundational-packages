@@ -4,10 +4,17 @@ on:
   push:
     branches:
       - base-2025
+  # Allows manually re-running/testing this trigger from the Actions tab or
+  # `gh workflow run`, independent of the push trigger required by the story.
+  workflow_dispatch:
+    inputs:
+      foundational_ref:
+        description: 'Branch/SHA for foundational-packages checkout'
+        required: false
 
 jobs:
   trigger-enterprise-build:
-    uses: habitat-sh/enterprise-packages/.github/workflows/build-packages.yml
+    uses: habitat-sh/enterprise-packages/.github/workflows/build-packages.yml@base-2025
     with:
-      foundational_ref: ${{ github.sha }}
+      foundational_ref: ${{ inputs.foundational_ref || github.sha }}
     secrets: inherit
