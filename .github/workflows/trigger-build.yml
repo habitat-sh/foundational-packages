@@ -44,7 +44,7 @@ jobs:
               --repo habitat-sh/enterprise-packages \
               --workflow build-packages.yml \
               --json databaseId,createdAt \
-              --jq "[.[] | select(.createdAt > \"$before\")] | sort_by(.createdAt) | last | .databaseId // empty")"
+              --jq "[.[] | select(.createdAt >= \"$before\")] | sort_by(.createdAt) | last | .databaseId // empty")"
             [ -n "$run_id" ] && break
             sleep 5
           done
