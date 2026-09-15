@@ -28,7 +28,9 @@ jobs:
       group: trigger-enterprise-build-dispatch
       cancel-in-progress: false
     env:
-      GH_TOKEN: ${{ secrets.GH_TOKEN }}
+      # TEMPORARY: testing a minimal-scope fine-grained PAT before handing the
+      # recipe to build-services. Revert to secrets.GH_TOKEN once confirmed.
+      GH_TOKEN: ${{ secrets.GH_TOKEN_TEST }}
     steps:
       - name: Dispatch enterprise-packages build
         id: dispatch
