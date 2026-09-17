@@ -8,7 +8,7 @@ $pkg_license=("zlib")
 $pkg_source="https://github.com/madler/zlib/archive/refs/tags/v$pkg_version.zip"
 
 $pkg_shasum="31fd9fee98812abcf147d0e103bc4d2f983c35a8d7a807a328a299f3a74e0050"
-$pkg_build_deps=@("core/visual-build-tools-2022/17.14.7/20260902211757", "core/windows-11-sdk/10.0.26100/20260902220215")
+$pkg_build_deps=@("core/visual-build-tools-2022", "core/windows-11-sdk")
 $pkg_bin_dirs=@("bin")
 $pkg_lib_dirs=@("lib")
 $pkg_include_dirs=@("include")
