@@ -8,12 +8,12 @@ $pkg_license=("BSD")
 $pkg_source="https://github.com/protocolbuffers/protobuf/archive/refs/tags/v${pkg_version}.zip"
 $pkg_shasum="dda7464336f1f8072ce087b4d7c2d3647d57961b0fd38ebf6308e8417c18ac85"
 $pkg_deps=@(
-    "core/zlib/1.3.2/20260903195141"
+    "core/zlib"
 )
 $pkg_build_deps=@(
-    "core/visual-build-tools-2022/17.14.7/20260902211757",
-	"core/windows-11-sdk/10.0.26100/20260902220215",
-	"core/git/2.55.0/20260903200032"
+    "core/visual-build-tools-2022",
+	"core/windows-11-sdk",
+	"core/git"
 )
 $pkg_bin_dirs=@("bin")
 $pkg_lib_dirs=@("lib")

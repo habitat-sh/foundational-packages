@@ -10,7 +10,7 @@ $pkg_license = @("GPL-2.0")
 $pkg_source = "https://github.com/git-for-windows/git/releases/download/v$pkg_version.windows.1/Git-$pkg_version-arm64.tar.bz2"
 $pkg_shasum = "440998321e239588588ce5c8df1a45ffe99551691ac47d148dbbdae76776b582"
 $pkg_bin_dirs = @("bin")
-$pkg_build_deps = @("core/7zip/26.01/20260901221035")
+$pkg_build_deps = @("core/7zip")
 
 function Invoke-Unpack {
     Push-Location (Resolve-Path $HAB_CACHE_SRC_PATH).Path
