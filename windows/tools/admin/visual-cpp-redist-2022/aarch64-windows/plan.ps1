@@ -7,7 +7,7 @@ $pkg_license=@("Microsoft Software License")
 $pkg_maintainer="The Habitat Maintainers <humans@habitat.sh>"
 $pkg_source="https://download.visualstudio.microsoft.com/download/pr/d7450eb5-03e1-436d-9e7e-deb5fe4759b3/5139E1440C3A20B92153A4DB561C069A0175AAF76C276C3E5B6F56099EDCF4B0/VC_redist.arm64.exe"
 $pkg_shasum="5139e1440c3a20b92153a4db561c069a0175aaf76c276c3e5b6f56099edcf4b0"
-$pkg_build_deps=@("core/lessmsi/2.0.1/20260902215152", "core/wix/3.14.1/20260903174546")
+$pkg_build_deps=@("core/lessmsi", "core/wix")
 $pkg_bin_dirs=@("bin")
 
 function Invoke-Unpack {

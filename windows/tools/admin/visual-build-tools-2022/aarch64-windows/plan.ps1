@@ -11,8 +11,8 @@ $pkg_maintainer="The Habitat Maintainers <humans@habitat.sh>"
 # Instead, we should always use the exact version of the build tools based on the configured version.
 # https://github.com/microsoft/winget-pkgs/tree/master/manifests/m/Microsoft/VisualStudio/2022/BuildTools
 $pkg_source="https://aka.ms/vs/17/release/vs_BuildTools.exe"
-$pkg_shasum="2aeac090a9cfb2c56474aa9a6c5817ad8cfb879539e0ed1aecec33de9fc2dc4f"
-$pkg_build_deps=@("core/7zip/26.01/20260901221035")
+$pkg_shasum="c988ff1317d082a67a8b4a26ab60e5fe0a8e41de3e4c22b626a0db6b490b5425"
+$pkg_build_deps=@("core/7zip")
 
 $pkg_bin_dirs=@(
     "Contents\VC\Tools\MSVC\14.44.35207\bin\HostARM64\arm64",

@@ -7,7 +7,7 @@ $pkg_license=@("Microsoft Software License")
 $pkg_maintainer="The Habitat Maintainers <humans@habitat.sh>"
 $pkg_source="https://download.microsoft.com/download/d05f36da-93d2-4b21-9f1a-555b094f7469/KIT_BUNDLE_WINDOWSSDK_MEDIACREATION/winsdksetup.exe"
 $pkg_shasum="cd2f2d69a1913b70e77d52ffd3295bd30e19b3f865a59c3f9b6fae8d852e961d"
-$pkg_build_deps=@("core/lessmsi/2.0.1/20260902215152")
+$pkg_build_deps=@("core/lessmsi")
 
 $pkg_bin_dirs=@(
     "Windows Kits\10\bin\arm64",
