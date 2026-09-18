@@ -12,6 +12,8 @@ on:
         description: 'Branch/SHA for foundational-packages checkout'
         required: false
 
+permissions: read-all
+
 jobs:
   trigger-enterprise-build:
     uses: habitat-sh/enterprise-packages/.github/workflows/build-packages.yml@base-2025
