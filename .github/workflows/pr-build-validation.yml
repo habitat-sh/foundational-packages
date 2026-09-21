@@ -324,8 +324,7 @@ jobs:
           HAB_AUTH_TOKEN: ${{ secrets.HAB_PUBLIC_BLDR_PAT }}
         run: |
           Set-StrictMode -Version Latest
-          Set-Location "${{ matrix.package }}"
-          hab pkg build .
+          hab pkg build "${{ matrix.package }}"
 
       - name: Prepare artifact name
         id: artifact
@@ -340,8 +339,8 @@ jobs:
         with:
           name: ${{ steps.artifact.outputs.name }}
           path: |
-            ${{ matrix.package }}/results/
-            ${{ matrix.package }}/habitat/
+            results/
+            habitat/
           if-no-files-found: ignore
           retention-days: 30
 

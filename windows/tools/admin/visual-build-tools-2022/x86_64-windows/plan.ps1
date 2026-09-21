@@ -11,13 +11,13 @@ $pkg_maintainer="The Habitat Maintainers <humans@habitat.sh>"
 # Instead, we should always use the exact version of the build tools based on the configured version.
 # https://github.com/microsoft/winget-pkgs/tree/master/manifests/m/Microsoft/VisualStudio/2022/BuildTools
 $pkg_source="https://aka.ms/vs/17/release/vs_BuildTools.exe"
-$pkg_shasum="a3193e6e6135ef7f598d6a9e429b010d77260dba33dddbee343a47494b5335a3"
+$pkg_shasum="985969f472caad75d993a5cb4c35a6a4271460cc12b343e2433b994d173aa990"
 $pkg_build_deps=@("core/7zip")
 
 $pkg_bin_dirs=@(
     "Contents\VC\Tools\MSVC\14.44.35207\bin\HostX64\x64",
-    "Contents\VC\Redist\MSVC\14.44.35112\x64\Microsoft.VC143.CRT",
-    "Contents\VC\Redist\MSVC\14.44.35112\x86\Microsoft.VC143.CRT", # For packaged 32 bit cmake
+    "Contents\VC\Redist\MSVC\14.44.35207\x64\Microsoft.VC143.CRT",
+    "Contents\VC\Redist\MSVC\14.44.35207\x86\Microsoft.VC143.CRT", # For packaged 32 bit cmake
     "Contents\MSBuild\Current\Bin\amd64",
 	"Contents\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin",
 	"Contents\Common7\IDE\CommonExtensions\Microsoft\CMake\Ninja"
@@ -35,14 +35,14 @@ function Invoke-SetupEnvironment {
     Set-RuntimeEnv "DisableRegistryUse" "true"
 	# Setting this Windows Driver Kit variable is necessary to enable
     # cmake to use this portable build tools package and not query
-    # the windows registry or the vieual studio installer components
+    # the windows registry or the visual studio installer components
     Set-RuntimeEnv "EnterpriseWDK" "true"
     Set-RuntimeEnv "UseEnv" "true"
     Set-RuntimeEnv "VCToolsVersion" "14.44.35207"
     Set-RuntimeEnv "VisualStudioVersion" "17.0"
     Set-RuntimeEnv -IsPath "VSINSTALLDIR" "$pkg_prefix\Contents"
-    Set-RuntimeEnv -IsPath "VCToolsInstallDir_170" "$pkg_prefix\Contents\VC\Redist\MSVC\14.44.35112"
-    # This prevents msbuild.exe from runniun (for 15 minutes) and locking files after a build completes
+    Set-RuntimeEnv -IsPath "VCToolsInstallDir_170" "$pkg_prefix\Contents\VC\Tools\MSVC\14.44.35207"
+    # This prevents msbuild.exe from running (for 15 minutes) and locking files after a build completes
     Set-RuntimeEnv "MSBUILDDISABLENODEREUSE" "1"
 }
 
@@ -84,9 +84,5 @@ function Invoke-Unpack {
 }
 
 function Invoke-Install {
-    # vctip.exe sends telemetry data to microsoft and locks files for several minutes after a build
-    # One can opt out via a registry setting which is not practical in a habitat context
-    # removing the execurtable is the best option here
-    #Get-ChildItem -Path "$HAB_CACHE_SRC_PATH\$pkg_dirname\expanded\Contents" -Recurse -Filter "vctip.exe" -Force | Remove-Item -Force
     Copy-Item "$HAB_CACHE_SRC_PATH\$pkg_dirname\vst\Contents" $pkg_prefix -Force -Recurse
 }
