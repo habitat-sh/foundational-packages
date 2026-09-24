@@ -1,5 +1,5 @@
 # shellcheck disable=2154
-_version="2.0.150"
+_version="2.1.98"
 native_target="${TARGET_ARCH:-${pkg_target%%-*}}-hab-linux-gnu"
 
 pkg_name="build-tools-hab"
@@ -7,7 +7,7 @@ pkg_origin="core"
 pkg_maintainer="The Habitat Maintainers <humans@habitat.sh>"
 pkg_license=('Apache-2.0')
 pkg_source="https://github.com/habitat-sh/habitat/archive/refs/tags/${_version}.tar.gz"
-pkg_shasum="92a94c9309dc9d20b90b4070c87b8be3eee036b05ab6667987b4bc6f895c7298"
+pkg_shasum="b9080b3f1fd00695bd29c9e6db0e100ae552221c8910d557e08fac9779686904"
 pkg_dirname="habitat-${_version}"
 # The result is a portable, static binary in a zero-dependency package.
 pkg_deps=(
