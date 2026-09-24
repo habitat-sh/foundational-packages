@@ -11,7 +11,7 @@ segfaults, and guarantees thread safety.\
 pkg_upstream_url="https://www.rust-lang.org/"
 pkg_license=('Apache-2.0' 'MIT')
 pkg_source="https://static.rust-lang.org/dist/${program}-${pkg_version}-${arch}-unknown-linux-gnu.tar.gz"
-pkg_shasum="5af9bf866cb6e83e54912b8814a4f520da02c50bd7694bebfea5b6bdd04d21f0"
+pkg_shasum="1c955c040dd087e4751d15588ddec288b4208bea16f8ec5046c164877e55fff7"
 pkg_dirname="${program}-${pkg_version}-${arch}-unknown-linux-gnu"
 
 pkg_bin_dirs=(bin)
