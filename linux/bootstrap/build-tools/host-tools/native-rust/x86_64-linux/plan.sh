@@ -22,7 +22,7 @@ do_build() {
 }
 
 do_install() {
-	./install.sh --prefix="$pkg_prefix" --disable-ldconfig
+	bash ./install.sh --prefix="$pkg_prefix" --disable-ldconfig
 	# Delete the uninstaller script as it is not required
 	rm "${pkg_prefix}"/lib/rustlib/uninstall.sh
 }
