@@ -1,12 +1,12 @@
 # shellcheck disable=2034
-_version="1.6.1108"
+_version="2.1.23"
 
 pkg_name="build-tools-hab-studio"
 pkg_origin=core
 pkg_maintainer="The Habitat Maintainers <humans@habitat.sh>"
 pkg_license=('Apache-2.0')
 pkg_source="https://github.com/habitat-sh/habitat/archive/refs/tags/${_version}.tar.gz"
-pkg_shasum="5145d59c2ec86290c8c5329171ece2b1289e795a3524c3db97b533679dc668b9"
+pkg_shasum="2062cca0b2d7d5408c10554deaeb0ce9fe52310868305d7009fd639be4e919bc"
 pkg_dirname="habitat-${_version}"
 
 pkg_deps=(
@@ -38,7 +38,7 @@ do_build() {
 
 do_install() {
 	# shellcheck disable=2154
-	install -v -D "$SRC_PATH"/components/studio/bin/hab-studio.sh "$pkg_prefix"/bin/hab-studio
+	install -v -D "$SRC_PATH"/components/studio/bin/hab-studio-linux.sh "$pkg_prefix"/bin/hab-studio
 	install -v -D "$SRC_PATH"/components/studio/libexec/hab-studio-profile.sh "$pkg_prefix"/libexec/hab-studio-profile.sh
 	for f in "$SRC_PATH"/components/studio/libexec/hab-studio-type-*.sh; do
 		[[ -e $f ]] || break # see http://mywiki.wooledge.org/BashPitfalls#pf1
