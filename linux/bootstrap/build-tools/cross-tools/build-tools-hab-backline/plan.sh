@@ -1,11 +1,11 @@
-_version="2.1.98"
+_version="2.1.23"
 
 pkg_name="build-tools-hab-backline"
 pkg_origin="core"
 pkg_maintainer="The Habitat Maintainers <humans@habitat.sh>"
 pkg_license=('Apache-2.0')
 pkg_source="https://github.com/habitat-sh/habitat/archive/refs/tags/${_version}.tar.gz"
-pkg_shasum="b9080b3f1fd00695bd29c9e6db0e100ae552221c8910d557e08fac9779686904"
+pkg_shasum="2062cca0b2d7d5408c10554deaeb0ce9fe52310868305d7009fd639be4e919bc"
 pkg_dirname="habitat-${_version}"
 
 pkg_build_deps=()
