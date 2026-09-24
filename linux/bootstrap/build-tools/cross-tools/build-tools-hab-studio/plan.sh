@@ -38,7 +38,7 @@ do_build() {
 
 do_install() {
 	# shellcheck disable=2154
-	install -v -D "$SRC_PATH"/components/studio/bin/hab-studio.sh "$pkg_prefix"/bin/hab-studio
+	install -v -D "$SRC_PATH"/components/studio/bin/hab-studio-linux.sh "$pkg_prefix"/bin/hab-studio
 	install -v -D "$SRC_PATH"/components/studio/libexec/hab-studio-profile.sh "$pkg_prefix"/libexec/hab-studio-profile.sh
 	for f in "$SRC_PATH"/components/studio/libexec/hab-studio-type-*.sh; do
 		[[ -e $f ]] || break # see http://mywiki.wooledge.org/BashPitfalls#pf1
