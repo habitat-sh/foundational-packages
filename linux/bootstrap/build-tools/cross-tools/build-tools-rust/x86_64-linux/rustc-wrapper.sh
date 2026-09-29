@@ -21,4 +21,6 @@ fi
 if [ -z "$HAB_LD_LINK_MODE" ]; then
 	export HAB_LD_LINK_MODE="minimal"
 fi
-@program@ "$@"
+# Rust 1.90+ defaults to LLD on x86_64 Linux. Use the Habitat linker
+# wrapper for all compilations, including Cargo host build scripts.
+@program@ -C linker-features=-lld "$@"

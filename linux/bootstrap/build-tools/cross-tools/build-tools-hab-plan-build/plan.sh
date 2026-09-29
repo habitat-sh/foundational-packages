@@ -1,12 +1,12 @@
 # shellcheck disable=2034
-_version="1.6.1108"
+_version="2.1.23"
 
 pkg_name="build-tools-hab-plan-build"
 pkg_origin=core
 pkg_maintainer="The Habitat Maintainers <humans@habitat.sh>"
 pkg_license=('Apache-2.0')
 pkg_source="https://github.com/habitat-sh/habitat/archive/refs/tags/${_version}.tar.gz"
-pkg_shasum="5145d59c2ec86290c8c5329171ece2b1289e795a3524c3db97b533679dc668b9"
+pkg_shasum="2062cca0b2d7d5408c10554deaeb0ce9fe52310868305d7009fd639be4e919bc"
 pkg_dirname="habitat-${_version}"
 
 pkg_bin_dirs=(bin)
@@ -41,7 +41,7 @@ do_unpack() {
 }
 
 do_build() {
-	cp -v "$SRC_PATH"/components/plan-build/bin/${program}.sh "$CACHE_PATH/$program"
+	cp -v "$SRC_PATH"/components/plan-build/bin/${program}-linux.sh "$CACHE_PATH/$program"
 
 	# Use the bash from our dependency list as the shebang. Also, embed the
 	# release version of the program.
