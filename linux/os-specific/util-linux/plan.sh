@@ -29,6 +29,13 @@ pkg_include_dirs=(include)
 pkg_lib_dirs=(lib)
 pkg_pconfig_dirs=(lib/pkgconfig)
 
+do_prepare() {
+	do_default_prepare
+
+	# Provide RESOLVE_NO_SYMLINKS for the ID-mapped mount hook.
+	patch -p1 <"$PLAN_CONTEXT/hook-idmap-fileutils.patch"
+}
+
 do_build() {
 	./configure \
 		--prefix="$pkg_prefix" \

@@ -1,0 +1,10 @@
+--- a/libmount/src/hook_idmap.c
++++ b/libmount/src/hook_idmap.c
+@@ -24,6 +24,7 @@
+ #include "strutils.h"
+ #include "all-io.h"
+ #include "namespace.h"
++#include "fileutils.h"
+ 
+ #include "mountP.h"
+ 
