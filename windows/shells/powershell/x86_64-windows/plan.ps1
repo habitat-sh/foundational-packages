@@ -6,7 +6,7 @@ $pkg_upstream_url="https://msdn.microsoft.com/powershell"
 $pkg_description="PowerShell is a cross-platform (Windows, Linux, and macOS) automation and configuration tool/framework that works well with your existing tools and is optimized for dealing with structured data (e.g. JSON, CSV, XML, etc.), REST APIs, and object models. It includes a command-line shell, an associated scripting language and a framework for processing cmdlets."
 $pkg_maintainer="The Habitat Maintainers <humans@habitat.sh>"
 $pkg_source="https://github.com/PowerShell/PowerShell/releases/download/v$pkg_version/PowerShell-$pkg_version-win-x64.zip"
-$pkg_shasum="93B6EB750336ADDA13C1044F728D5DBC6BCBC60129244546AB04059141C66A44"
+$pkg_shasum="93b6eb750336adda13c1044f728d5dbc6bcbc60129244546ab04059141c66a44"
 $pkg_filename="powershell-$pkg_version-win-x64.zip"
 $pkg_bin_dirs=@("bin")
 
