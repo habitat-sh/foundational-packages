@@ -23,6 +23,7 @@ pkg_build_deps=(
 	core/pkg-config
 	core/build-tools-python
 	core/shadow
+	core/patch
 )
 pkg_bin_dirs=(bin)
 pkg_include_dirs=(include)
