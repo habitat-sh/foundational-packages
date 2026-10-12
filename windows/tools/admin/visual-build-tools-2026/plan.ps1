@@ -6,13 +6,13 @@ $pkg_upstream_url="https://visualstudio.microsoft.com/downloads/#build-tools-for
 $pkg_license=@("Microsoft Software License")
 $pkg_maintainer="The Habitat Maintainers <humans@habitat.sh>"
 # $pkg_source="https://github.com/microsoft/winget-pkgs/tree/master/manifests/m/Microsoft/VisualStudio/BuildTools"
-$pkg_source="https://aka.ms/vs/stable/vs_BuildTools.exe"
+$pkg_source="https://download.visualstudio.microsoft.com/download/pr/58aec969-7d60-47ab-a001-285ca0c69097/2818a86e05e8e4a3a7e27fa12c729a6484209109ab06b2352195ebb10aa33723/vs_BuildTools.exe"
 # When accessing the vs_BuildTools.exe from https://aka.ms/vs/18/release/vs_BuildTools.exe, 
 # it always provides the latest version of the build tools, which, in turn, can change dependencies. 
 # This may cause issues due to differences in the build time and result in a loss of reproducibility. 
 # Instead, we should always use the exact version of the build tools based on the configured version.
-# https://github.com/microsoft/winget-pkgs/tree/master/manifests/m/Microsoft/VisualStudio/BuildTools
-$pkg_shasum="746102400cd7b88c5ac2ccf66ba5fbcf7357710809be0717cda716bdeff11817"
+# https://github.com/microsoft/winget-pkgs/tree/master/manifests/m/Microsoft/VisualStudio/BuildTools/18.8.2
+$pkg_shasum="2818a86e05e8e4a3a7e27fa12c729a6484209109ab06b2352195ebb10aa33723"
 $pkg_build_deps=@("core/7zip")
 
 $pkg_bin_dirs=@(
