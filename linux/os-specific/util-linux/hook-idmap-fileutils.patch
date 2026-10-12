@@ -1,0 +1,45 @@
+--- a/libmount/src/hook_idmap.c
++++ b/libmount/src/hook_idmap.c
+@@ -24,6 +24,7 @@
+ #include "strutils.h"
+ #include "all-io.h"
+ #include "namespace.h"
++#include "fileutils.h"
+ 
+ #include "mountP.h"
+ 
+--- a/include/fileutils.h
++++ b/include/fileutils.h
+@@ -11,6 +11,10 @@
+ #include <dirent.h>
+ #include <sys/stat.h>
+ 
++#ifdef HAVE_LINUX_OPENAT2_H
++# include <linux/openat2.h>
++#endif
++
+ #include "c.h"
+ 
+ extern int mkstemp_cloexec(char *template);
+@@ -69,7 +73,7 @@ extern int ul_openat_resolve(int dirfd, const char *path, int flags,
+ 			     mode_t mode, unsigned long long resolve);
+ 
+ #ifndef RESOLVE_NO_SYMLINKS
+-# define RESOLVE_NO_SYMLINKS	0x02
++# define RESOLVE_NO_SYMLINKS	0x04
+ #endif
+ #ifndef RESOLVE_BENEATH
+ # define RESOLVE_BENEATH	0x08
+--- a/lib/fileutils.c
++++ b/lib/fileutils.c
+@@ -19,10 +19,6 @@
+ #include <fcntl.h>
+ #include <errno.h>
+ 
+-#ifdef HAVE_LINUX_OPENAT2_H
+-# include <linux/openat2.h>
+-#endif
+-
+ #include "c.h"
+ #include "all-io.h"
+ #include "fileutils.h"

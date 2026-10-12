@@ -1,6 +1,6 @@
 [rules]
 # ignore examples with host script interpreters
 host-script-interpreter = {ignored_files = ["*-example.{bash,tcsh}"]}
-license-not-found = {level = "off", source-shasum = "5c1daf733b04e9859afdc3bd87cc481180ee0f88b5c0946b16fdec931975fb79"}
-missing-license = {level = "off", source-shasum = "5c1daf733b04e9859afdc3bd87cc481180ee0f88b5c0946b16fdec931975fb79"}
+license-not-found = {level = "off", source-shasum = "e596083744e746be7d2823b62b43f4418dd7bf56303b4dc09e6fe8112fe3d7ed"}
+missing-license = {level = "off", source-shasum = "e596083744e746be7d2823b62b43f4418dd7bf56303b4dc09e6fe8112fe3d7ed"}
 unused-runpath-entry = {level = "off"}
