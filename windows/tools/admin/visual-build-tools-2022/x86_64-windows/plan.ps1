@@ -9,9 +9,9 @@ $pkg_maintainer="The Habitat Maintainers <humans@habitat.sh>"
 # it always provides the latest version of the build tools, which, in turn, can change dependencies. 
 # This may cause issues due to differences in the build time and result in a loss of reproducibility. 
 # Instead, we should always use the exact version of the build tools based on the configured version.
-# https://github.com/microsoft/winget-pkgs/tree/master/manifests/m/Microsoft/VisualStudio/2022/BuildTools
-$pkg_source="https://aka.ms/vs/17/release/vs_BuildTools.exe"
-$pkg_shasum="985969f472caad75d993a5cb4c35a6a4271460cc12b343e2433b994d173aa990"
+# https://github.com/microsoft/winget-pkgs/tree/master/manifests/m/Microsoft/VisualStudio/2022/BuildTools/17.14.7
+$pkg_source="https://download.visualstudio.microsoft.com/download/pr/13907dbe-8bb3-4cfe-b0ae-147e70f8b2f3/8e3a678471efe31f94d708b5ae2a5f78d2fed2b95e70079b157e6f3d6231efd7/vs_BuildTools.exe"
+$pkg_shasum="8e3a678471efe31f94d708b5ae2a5f78d2fed2b95e70079b157e6f3d6231efd7"
 $pkg_build_deps=@("core/7zip")
 
 $pkg_bin_dirs=@(
