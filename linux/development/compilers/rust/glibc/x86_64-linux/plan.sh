@@ -1,7 +1,7 @@
 #shellcheck disable=SC2034,SC2154,SC2164
 pkg_name="rust"
 pkg_origin="core"
-pkg_version="1.98.1"
+pkg_version="1.99.0"
 pkg_maintainer="The Habitat Maintainers <humans@habitat.sh>"
 pkg_description="\
 Rust is a systems programming language that runs blazingly fast, prevents \
@@ -11,7 +11,7 @@ pkg_upstream_url="https://www.rust-lang.org/"
 pkg_license=('Apache-2.0' 'MIT')
 _url_base="https://static.rust-lang.org/dist"
 pkg_source="$_url_base/${pkg_name}-${pkg_version}-x86_64-unknown-linux-gnu.tar.gz"
-pkg_shasum="24ba1338a2d35c5a3247936546429e163fa674d726102af18bdf624582c57aea"
+pkg_shasum="de0581ca9d732295a6474cfbd02461db27d69acd5050a8206523a8d6fa1599db"
 pkg_dirname="${pkg_name}-${pkg_version}-x86_64-unknown-linux-gnu"
 pkg_deps=(
 	core/binutils
