@@ -10,7 +10,7 @@ and PKZIP.\
 "
 pkg_upstream_url="http://www.zlib.net/"
 pkg_license=('Zlib')
-pkg_source="http://zlib.net/${program}-${pkg_version}.tar.gz"
+pkg_source="https://zlib.net/fossils/${program}-${pkg_version}.tar.gz"
 pkg_shasum="9a93b2b7dfdac77ceba5a558a580e74667dd6fede4585b91eefb60f03b72df23"
 pkg_dirname="${program}-${pkg_version}"
 
