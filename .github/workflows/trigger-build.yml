@@ -17,12 +17,12 @@ on:
         required: false
 
 jobs:
-  # NOTE: This does NOT use `uses:` to call build-packages.yml as a reusable
+  # NOTE: This does NOT use `uses:` to call build-and-stage-packages.yml as a reusable
   # workflow. enterprise-packages is a private/internal repo whose "Access to
   # reusable workflows" setting only permits callers that are themselves
   # private or internal repos. foundational-packages is public, so GitHub
   # blocks that reference entirely ("workflow was not found"), regardless of
-  # the Access setting. Instead, this dispatches build-packages.yml's own
+  # the Access setting. Instead, this dispatches build-and-stage-packages.yml's own
   # workflow_dispatch trigger via the API/CLI, which only requires GH_TOKEN to
   # have write access to enterprise-packages and is unaffected by the
   # public/private restriction above.
@@ -43,7 +43,7 @@ jobs:
           ENTERPRISE_REF: ${{ inputs.enterprise_ref || 'base-2025' }}
         run: |
           before="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
-          gh workflow run build-packages.yml \
+          gh workflow run build-and-stage-packages.yml \
             --repo habitat-sh/enterprise-packages \
             --ref "$ENTERPRISE_REF" \
             -f "enterprise_ref=$ENTERPRISE_REF" \
@@ -55,7 +55,7 @@ jobs:
           for _ in $(seq 1 12); do
             run_id="$(gh run list \
               --repo habitat-sh/enterprise-packages \
-              --workflow build-packages.yml \
+              --workflow build-and-stage-packages.yml \
               --branch "$ENTERPRISE_REF" \
               --event workflow_dispatch \
               --json databaseId,createdAt \
