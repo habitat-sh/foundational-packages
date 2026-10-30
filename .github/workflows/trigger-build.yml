@@ -36,7 +36,7 @@ jobs:
       - name: Dispatch enterprise-packages build
         id: dispatch
         env:
-          FOUNDATIONAL_REF: ${{ inputs.foundational_ref || 'base-2025' }}
+          FOUNDATIONAL_REF: ${{ inputs.foundational_ref || (github.event_name == 'push' && 'base-2025' || github.sha) }}
           ENTERPRISE_REF: ${{ inputs.enterprise_ref || 'base-2025' }}
           # Debounce only automatic pushes. Refs stay as branch names so the surviving run builds the newest merges.
           DEBOUNCE: ${{ github.event_name == 'push' }}
@@ -80,6 +80,11 @@ jobs:
           conclusion="$(gh run view "$run_id" --repo habitat-sh/enterprise-packages --json conclusion --jq .conclusion)"
           case "$conclusion" in
             success) ;;
-            cancelled) echo "::notice::Enterprise build $run_id was cancelled, likely superseded by a newer merge." ;;
-            *) echo "::error::Enterprise build $run_id concluded with '$conclusion'"; exit 1 ;;
+            cancelled)
+              if [ "${{ github.event_name }}" != "push" ]; then
+                echo "::error::Enterprise build $run_id was cancelled"
+                exit 1
+              fi
+              echo "::notice::Enterprise build $run_id was cancelled, likely superseded by a newer merge."
+              ;;            *) echo "::error::Enterprise build $run_id concluded with '$conclusion'"; exit 1 ;;
           esac
