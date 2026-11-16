@@ -216,6 +216,7 @@ jobs:
           hab pkg build .
 
       - name: Prepare artifact name
+        if: always()
         id: artifact
         shell: bash
         run: |
@@ -327,6 +328,7 @@ jobs:
           hab pkg build "${{ matrix.package }}"
 
       - name: Prepare artifact name
+        if: always()
         id: artifact
         shell: pwsh
         run: |
