@@ -2,7 +2,7 @@ program="gzip"
 
 pkg_name="gzip"
 pkg_origin="core"
-pkg_version="1.14"
+pkg_version="1.15"
 pkg_maintainer="The Habitat Maintainers <humans@habitat.sh>"
 pkg_description="\
 GNU Gzip is a popular data compression program originally written by Jean-loup \
@@ -11,7 +11,7 @@ Gailly for the GNU project.\
 pkg_upstream_url="https://www.gnu.org/software/gzip/"
 pkg_license=("GPL-3.0-only")
 pkg_source="http://ftp.gnu.org/gnu/${program}/${program}-${pkg_version}.tar.xz"
-pkg_shasum="01a7b881bd220bfdf615f97b8718f80bdfd3f6add385b993dcf6efd14e8c0ac6"
+pkg_shasum="9aa0cc780dec156b8282844833b342ab7cb08c25d2cd9a1869cdd0df31deff48"
 
 pkg_deps=(
 	core/coreutils
