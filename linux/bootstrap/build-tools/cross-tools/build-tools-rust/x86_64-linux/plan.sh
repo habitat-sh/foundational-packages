@@ -22,6 +22,7 @@ pkg_deps=(
 pkg_build_deps=(
 	core/build-tools-patchelf
 	core/build-tools-coreutils
+	core/build-tools-file
 )
 
 pkg_bin_dirs=(bin)
