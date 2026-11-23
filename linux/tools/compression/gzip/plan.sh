@@ -22,10 +22,15 @@ pkg_deps=(
 )
 pkg_build_deps=(
 	core/gcc
+	core/patch
 	core/build-tools-perl
 	core/build-tools-util-linux
 )
 pkg_bin_dirs=(bin)
+
+do_prepare() {
+	patch -p1 <"$PLAN_CONTEXT/fix-aarch64-header-conflict.patch"
+}
 
 do_build() {
 	./configure \
