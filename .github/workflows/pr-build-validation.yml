@@ -29,6 +29,8 @@ jobs:
     outputs:
       has-linux-x86_64: ${{ steps.detect.outputs.has-linux-x86_64 }}
       linux-x86_64-packages: ${{ steps.detect.outputs.linux-x86_64-packages }}
+      has-linux-aarch64: ${{ steps.detect.outputs.has-linux-aarch64 }}
+      linux-aarch64-packages: ${{ steps.detect.outputs.linux-aarch64-packages }}
       has-windows: ${{ steps.detect.outputs.has-windows }}
       windows-packages: ${{ steps.detect.outputs.windows-packages }}
 
@@ -65,9 +67,7 @@ jobs:
           # Walk each changed file upward to find its package root directory.
           # A package root is the nearest ancestor directory containing a plan file
           # (plan.sh for Linux, plan.ps1 for Windows).
-          # Special case: some Linux packages store their plan under an
-          # x86_64-linux/ subfolder. If found, emit that subfolder path instead
-          # of the parent so the correct platform-specific plan is built.
+          # Route shared parent-folder changes to each available architecture plan.
           package_dirs=$(while IFS= read -r file; do
             [[ -z "$file" ]] && continue
             [[ "$file" == linux/* || "$file" == windows/* ]] || continue
@@ -83,11 +83,12 @@ jobs:
                 break
               fi
 
-              # If a linux package keeps its plan in an x86_64-linux subfolder,
-              # route parent-folder changes to that subfolder.
-              if [[ "$dir" == linux/* && -f "$dir/x86_64-linux/plan.sh" ]]; then
-                printf '%s\n' "$dir/x86_64-linux"
-                break
+              if [[ "$dir" == linux/* ]]; then
+                if [[ -f "$dir/x86_64-linux/plan.sh" || -f "$dir/aarch64-linux/plan.sh" ]]; then
+                  [[ -f "$dir/x86_64-linux/plan.sh" ]] && printf '%s\n' "$dir/x86_64-linux"
+                  [[ -f "$dir/aarch64-linux/plan.sh" ]] && printf '%s\n' "$dir/aarch64-linux"
+                  break
+                fi
               fi
 
               parent=$(dirname "$dir")
@@ -98,7 +99,12 @@ jobs:
             done
           done <<< "$changed_files" | sort -u)
 
-          linux_x86_64_packages=$(printf '%s\n' "$package_dirs" | grep '^linux/' || true)
+          linux_packages=$(printf '%s\n' "$package_dirs" | grep '^linux/' || true)
+          linux_x86_64_specific=$(printf '%s\n' "$linux_packages" | grep '/x86_64-linux$' || true)
+          linux_aarch64_specific=$(printf '%s\n' "$linux_packages" | grep '/aarch64-linux$' || true)
+          linux_generic=$(printf '%s\n' "$linux_packages" | grep -Ev '/(x86_64-linux|aarch64-linux)$' || true)
+          linux_x86_64_packages=$(printf '%s\n%s\n' "$linux_generic" "$linux_x86_64_specific" | sed '/^$/d' | sort -u)
+          linux_aarch64_packages=$(printf '%s\n%s\n' "$linux_generic" "$linux_aarch64_specific" | sed '/^$/d' | sort -u)
           windows_packages=$(printf '%s\n' "$package_dirs" | grep '^windows/' || true)
 
           # Converts a newline-separated list of package paths to a JSON array.
@@ -114,6 +120,7 @@ jobs:
           }
 
           linux_x86_64_json=$(to_json "$linux_x86_64_packages")
+          linux_aarch64_json=$(to_json "$linux_aarch64_packages")
           windows_json=$(to_json "$windows_packages")
 
           if [[ "$linux_x86_64_json" == "[]" ]]; then
@@ -123,6 +130,13 @@ jobs:
           fi
           echo "linux-x86_64-packages=$linux_x86_64_json" >> "$GITHUB_OUTPUT"
 
+          if [[ "$linux_aarch64_json" == "[]" ]]; then
+            echo "has-linux-aarch64=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "has-linux-aarch64=true" >> "$GITHUB_OUTPUT"
+          fi
+          echo "linux-aarch64-packages=$linux_aarch64_json" >> "$GITHUB_OUTPUT"
+
           if [[ "$windows_json" == "[]" ]]; then
             echo "has-windows=false" >> "$GITHUB_OUTPUT"
           else
@@ -131,6 +145,7 @@ jobs:
           echo "windows-packages=$windows_json" >> "$GITHUB_OUTPUT"
 
           echo "Linux x86_64 packages: $linux_x86_64_json"
+          echo "Linux aarch64 packages: $linux_aarch64_json"
           echo "Windows packages: $windows_json"
 
   # Job: build-linux-x86_64
@@ -145,10 +160,11 @@ jobs:
     timeout-minutes: 60
     strategy:
       matrix:
+        architecture: [x86_64]
         package: ${{ fromJson(needs.detect-changes.outputs.linux-x86_64-packages) }}
       fail-fast: false
 
-    steps:
+    steps: &linux-build-steps
       - name: Checkout Repo
         uses: actions/checkout@v6.0.3
 
@@ -221,7 +237,7 @@ jobs:
         run: |
           set -euo pipefail
           safe_name=$(printf '%s' "${{ matrix.package }}" | tr '/' '-')
-          echo "name=linux-x86_64-$safe_name" >> "$GITHUB_OUTPUT"
+          echo "name=linux-${{ matrix.architecture }}-$safe_name" >> "$GITHUB_OUTPUT"
 
       - name: Upload build results
         if: always()
@@ -233,6 +249,19 @@ jobs:
             ${{ matrix.package }}/habitat/
           if-no-files-found: ignore
           retention-days: 30
+
+  build-linux-aarch64:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.has-linux-aarch64 == 'true'
+    runs-on: ubuntu-24.04-arm
+    name: Build changed Linux aarch64 packages
+    timeout-minutes: 60
+    strategy:
+      matrix:
+        architecture: [aarch64]
+        package: ${{ fromJson(needs.detect-changes.outputs.linux-aarch64-packages) }}
+      fail-fast: false
+    steps: *linux-build-steps
 
   # Job: build-windows
   # Builds each changed Windows Habitat package using a matrix strategy.
@@ -348,7 +377,7 @@ jobs:
   # Always runs after all build jobs (pass, fail, or skip) to print
   # a consolidated list of which packages were detected and built.
   summary:
-    needs: [detect-changes, build-linux-x86_64, build-windows]
+    needs: [detect-changes, build-linux-x86_64, build-linux-aarch64, build-windows]
     runs-on: ubuntu-24.04
     name: Build Summary
     if: always()
@@ -359,4 +388,5 @@ jobs:
         shell: bash
         run: |
           echo "Linux x86_64 packages: ${{ needs.detect-changes.outputs.linux-x86_64-packages }}"
+          echo "Linux aarch64 packages: ${{ needs.detect-changes.outputs.linux-aarch64-packages }}"
           echo "Windows packages: ${{ needs.detect-changes.outputs.windows-packages }}"
